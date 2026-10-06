@@ -1,6 +1,7 @@
 /* =========================================================
    ИДЕЯ ПЛЮС — interactions
-   data-driven gallery · filters · swipe lightbox · reveals
+   brand intro · portfolio with LED-scan · manifesto · timeline ·
+   counters · filters · swipe lightbox · reveals
    ========================================================= */
 (() => {
   'use strict';
@@ -8,7 +9,8 @@
   /* ---- Работы. Каждый объект = одно фото готовой мебели.
      Чтобы добавить работу — положите фото в assets/work-examples/<...>/
      и добавьте новый элемент в массив ниже (можно переиспользовать
-     существующую категорию или завести новую — фильтры соберутся сами). ---- */
+     существующую категорию или завести новую — фильтры соберутся сами).
+     note — необязательная подпись под названием. ---- */
   const TEMP = 'assets/work-examples/temp/';
   const WORKS = [
     {
@@ -17,6 +19,7 @@
       category: 'Мебель для ванной',
       src: TEMP + 'photo_1_2026-09-06_21-29-52.jpg',
       alt: 'Ванная комната с тумбой и пеналом цвета хаки, подсветкой и рейчатой панелью',
+      note: 'Матовые фасады цвета хаки, рейчатая панель из шпона и встроенная подсветка ниши.',
     },
     {
       id: 'hallway-blue',
@@ -24,6 +27,7 @@
       category: 'Гардеробные',
       src: TEMP + 'photo_2_2026-09-06_21-29-52.jpg',
       alt: 'Прихожая со встроенным синим шкафом-купе и мягкой скамьёй для обуви',
+      note: 'Шкаф от пола до потолка, мягкие панели с крючками и скамья для обуви — одна система.',
     },
     {
       id: 'bedroom-arch',
@@ -31,6 +35,7 @@
       category: 'Спальни',
       src: TEMP + 'photo_3_2026-09-06_21-29-52.jpg',
       alt: 'Спальня с арочной нишей, встроенным синим шкафом и прикроватными тумбами',
+      note: 'Встроенный шкаф в тон стен, арочная ниша и подвесные тумбы вместо привычных ножек.',
     },
   ];
 
@@ -313,11 +318,8 @@
     ));
   }
 
-  /* ---------- pointer-fine detection (для тилта карточек) ---------- */
-  const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-
   /* ========================================================
-     WORKS GRID + FILTERS
+     WORKS — журнальная вёрстка, фото проявляется из чертежа
      ======================================================== */
   const grid = $('#works-grid');
   const filtersEl = $('#works-filters');
@@ -326,7 +328,41 @@
 
   const cardsById = new Map();
 
-  categories.forEach((cat, i) => {
+  // своя ленивая загрузка: нативная не грузит фото, пока оно скрыто clip-path под «шторкой»
+  const loadImg = (img) => { if (!img.src && img.dataset.src) img.src = img.dataset.src; };
+  const preloadIO = 'IntersectionObserver' in window
+    ? new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        preloadIO.unobserve(e.target);
+        loadImg($('.work__img', e.target));
+      });
+    }, { rootMargin: '100% 0px' })
+    : null;
+
+  // «LED-скан» запускается, когда кадр заехал в экран
+  const scanIO = 'IntersectionObserver' in window && !reduceMotion
+    ? new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const card = e.target;
+        scanIO.unobserve(card);
+        // сканер стартует только когда фото уже загружено — иначе линия пройдёт по пустоте
+        const img = $('.work__img', card);
+        const start = () => {
+          card.classList.add('is-scanning');
+          setTimeout(() => card.classList.add('is-scanned'), 1500);
+        };
+        if (img.complete && img.naturalWidth) start();
+        else {
+          img.addEventListener('load', start, { once: true });
+          img.addEventListener('error', () => card.classList.add('is-scanned'), { once: true });
+        }
+      });
+    }, { threshold: 0.35 })
+    : null;
+
+  categories.forEach((cat) => {
     const chip = document.createElement('button');
     chip.type = 'button';
     chip.className = 'filter-chip' + (cat === activeCategory ? ' is-active' : '');
@@ -337,44 +373,48 @@
     filtersEl.appendChild(chip);
   });
 
-  WORKS.forEach((w, i) => {
-    const card = document.createElement('button');
-    card.type = 'button';
-    card.className = 'project-card reveal';
-    card.style.transitionDelay = (0.06 * i) + 's';
+  WORKS.forEach((w) => {
+    const card = document.createElement('article');
+    card.className = 'work';
     card.dataset.category = w.category;
-    card.dataset.id = w.id;
-    card.setAttribute('aria-label', `Открыть работу: ${w.title}`);
     card.innerHTML = `
-      <div class="project-card__frame">
-        <span class="project-card__badge">${escapeHtml(w.category)}</span>
-        <img class="project-card__img" src="${w.src}" alt="${escapeHtml(w.alt)}" loading="lazy" decoding="async">
-      </div>
-      <div class="project-card__meta">
-        <span class="project-card__title">${escapeHtml(w.title)}</span>
-<!--        <span class="project-card__type">${escapeHtml(w.category)}</span>-->
+      <button class="work__frame" type="button" aria-label="Открыть фото: ${escapeHtml(w.title)}">
+        <span class="work__plan" aria-hidden="true"></span>
+        <img class="work__img" data-src="${w.src}" alt="${escapeHtml(w.alt)}" decoding="async">
+        <span class="work__scan" aria-hidden="true"></span>
+        <span class="work__dim" aria-hidden="true"><span>${escapeHtml(w.category)}</span><span>1:1</span></span>
+      </button>
+      <div class="work__meta reveal">
+        <span class="work__num" aria-hidden="true"></span>
+        <span class="work__cat">${escapeHtml(w.category)}</span>
+        <h3 class="work__title">${escapeHtml(w.title)}</h3>
+        ${w.note ? `<p class="work__note">${escapeHtml(w.note)}</p>` : ''}
+        <button class="work__more" type="button">Смотреть фото <span aria-hidden="true">→</span></button>
       </div>`;
-    card.addEventListener('click', () => {
+    const openThis = () => {
       const visible = getVisibleWorks();
       const idx = visible.findIndex((v) => v.id === w.id);
       if (idx > -1) Lightbox.open(visible, idx);
-    });
-
-    const frame = $('.project-card__frame', card);
-    if (isFinePointer) {
-      frame.addEventListener('pointermove', (e) => {
-        const r = frame.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width - 0.5;
-        const py = (e.clientY - r.top) / r.height - 0.5;
-        frame.style.transform = `rotateX(${(-py * 7).toFixed(2)}deg) rotateY(${(px * 9).toFixed(2)}deg)`;
-      });
-      frame.addEventListener('pointerleave', () => { frame.style.transform = ''; });
-    }
+    };
+    $('.work__frame', card).addEventListener('click', openThis);
+    $('.work__more', card).addEventListener('click', openThis);
 
     grid.appendChild(card);
-    observeReveal(card);
+    observeReveal($('.work__meta', card));
+    if (preloadIO) preloadIO.observe(card); else loadImg($('.work__img', card));
+    if (scanIO) scanIO.observe(card); else card.classList.add('is-scanned');
     cardsById.set(w.id, card);
   });
+  layoutWorks();
+
+  // номера и чередование сторон — по видимым работам
+  function layoutWorks() {
+    getVisibleWorks().forEach((w, i) => {
+      const card = cardsById.get(w.id);
+      card.classList.toggle('is-flip', i % 2 === 1);
+      $('.work__num', card).textContent = String(i + 1).padStart(2, '0');
+    });
+  }
 
   function getVisibleWorks() {
     return activeCategory === 'Все' ? WORKS : WORKS.filter((w) => w.category === activeCategory);
@@ -397,6 +437,119 @@
         card.classList.add('is-out');
         window.setTimeout(() => { if (card.classList.contains('is-out')) card.classList.add('is-hidden'); }, 420);
       }
+    });
+    layoutWorks();
+  }
+
+  /* ---------- манифест: слова загораются по мере прокрутки ---------- */
+  const manifesto = $('#manifesto-text');
+  const words = [];
+  if (manifesto) {
+    // оборачиваем каждое слово, сохраняя <em>
+    const wrap = (node) => {
+      Array.from(node.childNodes).forEach((n) => {
+        if (n.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+            const span = document.createElement('span');
+            span.className = 'mw';
+            span.textContent = part;
+            frag.appendChild(span);
+            words.push(span);
+          });
+          n.replaceWith(frag);
+        } else if (n.nodeType === 1) wrap(n);
+      });
+    };
+    wrap(manifesto);
+  }
+
+  /* ---------- таймлайн процесса: свет течёт по рельсу ---------- */
+  const timeline = $('#timeline');
+  const steps = timeline ? $$('.step', timeline) : [];
+
+  /* ---------- единый обработчик прокрутки для «живых» секций ---------- */
+  let scrollRaf = 0;
+  function onScrollFx() {
+    scrollRaf = 0;
+    const vh = window.innerHeight;
+    if (words.length) {
+      const r = manifesto.getBoundingClientRect();
+      // текст «прочитан» целиком, когда его низ поднялся до 45% экрана
+      const p = reduceMotion ? 1 : Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.4)));
+      const lit = p * words.length;
+      words.forEach((w, i) => {
+        const v = Math.min(1, Math.max(0, lit - i));
+        w.style.setProperty('--lit', v.toFixed(3));
+        w.classList.toggle('is-edge', v > 0 && v < 1);
+      });
+    }
+    if (timeline) {
+      const r = timeline.getBoundingClientRect();
+      const p = Math.min(1, Math.max(0, (vh * 0.6 - r.top) / r.height));
+      timeline.style.setProperty('--p', p.toFixed(4));
+      const fillY = r.top + r.height * p;
+      steps.forEach((st) => {
+        const dot = st.firstElementChild.getBoundingClientRect();
+        st.classList.toggle('is-lit', dot.top + dot.height / 2 <= fillY + 1);
+      });
+    }
+  }
+  const requestFx = () => { if (!scrollRaf) scrollRaf = requestAnimationFrame(onScrollFx); };
+  window.addEventListener('scroll', requestFx, { passive: true });
+  window.addEventListener('resize', requestFx);
+  onScrollFx();
+
+  /* ---------- цифры считаются вверх ---------- */
+  const counters = $$('[data-count]');
+  if (counters.length && 'IntersectionObserver' in window && !reduceMotion) {
+    counters.forEach((el) => { el.textContent = '0'; });
+    const countIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        countIO.unobserve(e.target);
+        const el = e.target, to = +el.dataset.count;
+        playTimeline([{ at: 200, dur: 1400, fn: (p) => { el.textContent = Math.round(to * p); } }]);
+      });
+    }, { threshold: 0.6 });
+    counters.forEach((el) => countIO.observe(el));
+  }
+
+  /* ---------- контакты: на фоне прорисовывается контур модуля ---------- */
+  const contacts = $('#contacts');
+  if (contacts) {
+    if ('IntersectionObserver' in window) {
+      const cIO = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) { contacts.classList.add('is-in'); cIO.disconnect(); }
+      }, { threshold: 0.25 });
+      cIO.observe(contacts);
+    } else contacts.classList.add('is-in');
+  }
+
+  /* ---------- текущий раздел подсвечивается в шапке ---------- */
+  const navLinks = $$('.nav__links a');
+  if (navLinks.length && 'IntersectionObserver' in window) {
+    const byId = new Map(navLinks.map((a) => [a.getAttribute('href').slice(1), a]));
+    const secIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        const link = byId.get(e.target.id);
+        if (link && e.isIntersecting) navLinks.forEach((a) => a.classList.toggle('is-current', a === link));
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    byId.forEach((_, id) => { const sec = document.getElementById(id); if (sec) secIO.observe(sec); });
+  }
+
+  /* ---------- hero: CAD-координаты курсора ---------- */
+  const coords = $('#coords');
+  if (coords && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const hero = $('#hero');
+    hero.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 1000;
+      const y = (1 - (e.clientY - r.top) / r.height) * 1000;
+      coords.textContent = `X ${x.toFixed(1).padStart(6, '0')} · Y ${y.toFixed(1).padStart(6, '0')}`;
     });
   }
 
