@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#1C1815">
+  <meta name="description" content="Идея Плюс — дизайнерская мебель на заказ: кухни, гардеробные, мебель для ванной, гостиной и спальни. Проект, производство и монтаж под ключ.">
+  <title>Идея Плюс — дизайнерская мебель на заказ</title>
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <script>document.documentElement.classList.add('js')</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#works">Перейти к работам</a>
+
+<!-- ambient light field -->
+<div class="ambient" aria-hidden="true">
+  <span class="ambient__blob ambient__blob--1"></span>
+  <span class="ambient__blob ambient__blob--2"></span>
+  <span class="ambient__blob ambient__blob--3"></span>
+</div>
+
+<!-- ====== NAV ====== -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top" aria-label="Идея Плюс — на главную">
+    <svg class="mini-mark" viewBox="12 6 76 88" aria-hidden="true">
+      <path class="mini-mark__body" d="M18 12H82V78H18ZM26 78V88M74 78V88"/>
+      <path class="mini-mark__plus" d="M58 19V71M25 48H75"/>
+      <path class="mini-mark__spark" d="M18 78V12H82V78Z" pathLength="100"/>
+    </svg>
+    <span class="nav__word">ИДЕЯ ПЛЮС</span>
+  </a>
+  <nav class="nav__links" aria-label="Основная навигация">
+    <a href="#works">Работы</a>
+    <a href="#services">Услуги</a>
+    <a href="#about">О нас</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+  <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu">
+    <span class="burger__box" aria-hidden="true"><i></i><i></i><i></i></span>
+  </button>
+</header>
+
+<!-- ====== FULLSCREEN MENU ====== -->
+<nav class="menu" id="menu" aria-label="Меню" aria-hidden="true" inert>
+  <div class="menu__veil" aria-hidden="true"></div>
+  <div class="menu__inner">
+    <ul class="menu__links">
+      <li><a href="#works"><span class="menu__word">Работы</span></a></li>
+      <li><a href="#services"><span class="menu__word">Услуги</span></a></li>
+      <li><a href="#about"><span class="menu__word">О нас</span></a></li>
+      <li><a href="#contacts"><span class="menu__word">Контакты</span></a></li>
+    </ul>
+    <div class="menu__foot">
+      <a class="menu__tel" href="tel:+79000000000">+7 900 000-00-00</a>
+      <a class="menu__ig" href="https://instagram.com/idea.plus.mebel" target="_blank" rel="noopener">@idea.plus.mebel</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+  <!-- ====== HERO ====== -->
+  <section class="hero" id="hero">
+    <p class="hero__eyebrow reveal">Дизайнерская мебель на заказ</p>
+
+    <!-- Знак «стеллаж»: корпус на ножках, перегородки-«плюс» = LED-подсветка.
+         Слои идут в порядке анимации: разметка → карандаш → латунь → блик → LED. -->
+    <div class="brand-mark brand-mark--hero" id="brand-hero">
+      <svg class="brand-mark__svg" viewBox="12 6 76 88" aria-hidden="true">
+        <defs>
+          <linearGradient id="bm-brass" gradientUnits="userSpaceOnUse" x1="18" y1="12" x2="82" y2="88">
+            <stop offset="0" stop-color="#F6E4C1"/>
+            <stop offset=".38" stop-color="#D3AF7C"/>
+            <stop offset=".62" stop-color="#8E6E42"/>
+            <stop offset="1" stop-color="#E3C592"/>
+          </linearGradient>
+          <linearGradient id="bm-sheen" gradientUnits="userSpaceOnUse" x1="-80" y1="0" x2="-50" y2="14">
+            <stop offset="0" stop-color="#FFF6E4" stop-opacity="0"/>
+            <stop offset=".5" stop-color="#FFF6E4" stop-opacity=".95"/>
+            <stop offset="1" stop-color="#FFF6E4" stop-opacity="0"/>
+          </linearGradient>
+          <radialGradient id="bm-spill" gradientUnits="userSpaceOnUse" cx="58" cy="48" r="46">
+            <stop offset="0" stop-color="#FFD9A3" stop-opacity=".26"/>
+            <stop offset="1" stop-color="#FFD9A3" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="bm-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="2.2"/>
+          </filter>
+        </defs>
+
+        <g class="bm-guides">
+          <path class="bm-draw" pathLength="100" d="M-22 12H122"/>
+          <path class="bm-draw" pathLength="100" d="M-22 78H122"/>
+          <path class="bm-draw" pathLength="100" d="M-22 48H122"/>
+          <path class="bm-draw" pathLength="100" d="M18 -12V104"/>
+          <path class="bm-draw" pathLength="100" d="M82 -12V104"/>
+          <path class="bm-draw" pathLength="100" d="M58 -12V104"/>
+          <circle class="bm-draw" pathLength="100" cx="58" cy="48" r="3.2"/>
+          <path class="bm-draw" pathLength="100" d="M18 3H82M16 5L20 1M80 5L84 1"/>
+          <path class="bm-draw" pathLength="100" d="M5 12V78M3 14L7 10M3 80L7 76"/>
+          <text class="bm-dim" x="50" y="1.4">640</text>
+          <text class="bm-dim" x="3.2" y="45" transform="rotate(-90 3.2 45)">720</text>
+        </g>
+
+        <rect class="bm-spill" x="20" y="14" width="60" height="62" fill="url(#bm-spill)"/>
+
+        <g class="bm-pencil">
+          <path class="bm-draw bm-side" pathLength="100" d="M18 78V12H82"/>
+          <path class="bm-draw bm-side" pathLength="100" d="M18 78H82V12"/>
+          <path class="bm-draw bm-leg" pathLength="100" d="M26 78V88"/>
+          <path class="bm-draw bm-leg" pathLength="100" d="M74 78V88"/>
+        </g>
+
+        <g class="bm-body">
+          <path d="M18 12H82V78H18Z"/>
+          <path d="M26 80V88M74 80V88"/>
+        </g>
+        <g class="bm-sheen">
+          <path d="M18 12H82V78H18Z"/>
+          <path d="M26 80V88M74 80V88"/>
+        </g>
+
+        <g class="bm-plus-off">
+          <path class="bm-draw" pathLength="100" d="M58 48V19"/>
+          <path class="bm-draw" pathLength="100" d="M58 48V71"/>
+          <path class="bm-draw" pathLength="100" d="M58 48H25"/>
+          <path class="bm-draw" pathLength="100" d="M58 48H75"/>
+        </g>
+        <g class="bm-led">
+          <path class="bm-led__glow" d="M58 19V71M25 48H75"/>
+          <path class="bm-led__core" d="M58 19V71M25 48H75"/>
+        </g>
+
+        <circle class="bm-flash" cx="82" cy="12" r="0"/>
+        <circle class="bm-cutter" r="1.7"/>
+        <circle class="bm-cutter" r="1.7"/>
+      </svg>
+      <span class="brand-mark__word">ИДЕЯ ПЛЮС</span>
+    </div>
+
+<!--    <h1 class="hero__title">-->
+<!--      <span class="reveal reveal&#45;&#45;d1">Идея становится</span>-->
+<!--      <span class="reveal reveal&#45;&#45;d2">мебелью,</span>-->
+<!--      <span class="reveal reveal&#45;&#45;d3">созданной для вас.</span>-->
+<!--    </h1>-->
+
+    <p class="hero__lede reveal reveal--d4">Проектируем и производим кухни, гардеробные и мебель под ключ — точно по размерам вашего дома, без типовых решений.</p>
+
+    <div class="hero__actions reveal reveal--d5">
+      <a class="btn btn--primary" href="#works">Смотреть работы</a>
+      <a class="btn btn--ghost" href="#contacts">Обсудить проект</a>
+    </div>
+
+    <a class="hero__scroll reveal reveal--d6" href="#works" aria-label="Листать вниз">
+      <svg class="hero__scroll-arrow" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- ====== ABOUT ====== -->
+  <section class="about section" id="about">
+    <p class="section__eyebrow reveal">О мастерской</p>
+    <div class="about__grid">
+      <div class="about__lead">
+        <h2 class="about__name reveal">Идея Плюс</h2>
+        <p class="about__text reveal">
+          Мы проектируем и производим мебель на заказ — от кухонь до полностью
+          укомплектованных гардеробных. Каждый предмет создаётся под конкретное
+          пространство: размеры, материалы и фурнитура подбираются индивидуально,
+          а не подгоняются под готовый шаблон.
+        </p>
+        <p class="about__text reveal">
+          Ведём проект от первого замера до монтажа под ключ: 3D-визуализация,
+          точное производство на собственном оборудовании, доставка и установка
+          с гарантией на результат.
+        </p>
+      </div>
+      <ul class="about__metrics reveal" aria-label="Коротко о мастерской">
+        <li><span class="about__num">8+</span><span class="about__cap">лет на рынке</span></li>
+        <li><span class="about__num">300+</span><span class="about__cap">изготовленных проектов</span></li>
+        <li><span class="about__num">5 лет</span><span class="about__cap">гарантии на фурнитуру</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ====== SERVICES ====== -->
+  <section class="services section" id="services">
+    <div class="section__head">
+      <p class="section__eyebrow reveal">Услуги</p>
+      <h2 class="section__title reveal">Что мы делаем</h2>
+      <p class="section__sub reveal">Мебель любой сложности — от отдельного предмета до полного оснащения квартиры.</p>
+    </div>
+    <div class="services__grid">
+      <article class="service-card reveal">
+        <span class="service-card__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M3 10v9h18v-9M7 14h3M3 10l2-6h14l2 6"/></svg>
+        </span>
+        <span class="led-strip led-strip--card" aria-hidden="true"></span>
+        <h3 class="service-card__title">Кухни на заказ</h3>
+        <p class="service-card__text">Эргономичные гарнитуры любой сложности — от классики до минимализма, с продуманным хранением и подсветкой рабочей зоны.</p>
+      </article>
+      <article class="service-card reveal reveal--d1">
+        <span class="service-card__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M12 3v18M8 12v.01M16 12v.01"/></svg>
+        </span>
+        <span class="led-strip led-strip--card" aria-hidden="true"></span>
+        <h3 class="service-card__title">Гардеробные и шкафы</h3>
+        <p class="service-card__text">Встроенные системы хранения, спроектированные под геометрию помещения — от прихожей до отдельной гардеробной комнаты.</p>
+      </article>
+      <article class="service-card reveal reveal--d2">
+        <span class="service-card__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M8 13V9a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v4M5 20v1M19 20v1"/></svg>
+        </span>
+        <span class="led-strip led-strip--card" aria-hidden="true"></span>
+        <h3 class="service-card__title">Мебель для ванной</h3>
+        <p class="service-card__text">Тумбы, пеналы и системы хранения из влагостойких материалов с точной подгонкой под сантехнику.</p>
+      </article>
+      <article class="service-card reveal reveal--d3">
+        <span class="service-card__ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5M3 18h18M5 11V7h6v4"/></svg>
+        </span>
+        <span class="led-strip led-strip--card" aria-hidden="true"></span>
+        <h3 class="service-card__title">Гостиная и спальня</h3>
+        <p class="service-card__text">Тумбы под ТВ, кровати, стеллажи и прикроватные системы в едином дизайн-коде интерьера.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ====== WORKS ====== -->
+  <section class="works section" id="works">
+    <div class="section__head">
+      <p class="section__eyebrow reveal">Портфолио</p>
+      <h2 class="section__title reveal">Наши работы</h2>
+      <p class="section__sub reveal">Реализованные проекты — материалы, цвет и подсветка подбираются под задачу.</p>
+    </div>
+    <div class="works__filters reveal" id="works-filters" role="group" aria-label="Фильтр по категории"></div>
+    <div class="works__grid" id="works-grid"></div>
+  </section>
+
+  <!-- ====== PROCESS ====== -->
+  <section class="process section" id="process">
+    <div class="section__head">
+      <p class="section__eyebrow reveal">Как мы работаем</p>
+      <h2 class="section__title reveal">Четыре шага до результата</h2>
+    </div>
+    <ol class="process__row">
+      <li class="process-step reveal">
+        <span class="process-step__num">01</span>
+        <h3 class="process-step__title">Консультация и замер</h3>
+        <p class="process-step__text">Выезжаем на объект, обсуждаем задачи и бюджет, снимаем точные размеры.</p>
+      </li>
+      <li class="process-step reveal reveal--d1">
+        <span class="process-step__num">02</span>
+        <h3 class="process-step__title">Дизайн-проект</h3>
+        <p class="process-step__text">Готовим 3D-визуализацию и чертежи, согласовываем материалы и фурнитуру.</p>
+      </li>
+      <li class="process-step reveal reveal--d2">
+        <span class="process-step__num">03</span>
+        <h3 class="process-step__title">Производство</h3>
+        <p class="process-step__text">Изготавливаем мебель на собственном оборудовании с контролем на каждом этапе.</p>
+      </li>
+      <li class="process-step reveal reveal--d3">
+        <span class="process-step__num">04</span>
+        <h3 class="process-step__title">Монтаж</h3>
+        <p class="process-step__text">Доставляем и устанавливаем мебель под ключ, даём гарантию на результат.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ====== CONTACTS ====== -->
+  <section class="contacts section" id="contacts">
+    <div class="contacts__panel glass reveal">
+      <p class="section__eyebrow">Контакты</p>
+      <h2 class="contacts__title">Расскажите о своём&nbsp;проекте</h2>
+      <p class="contacts__sub">
+        Свяжемся в течение дня, посчитаем стоимость и сроки изготовления.
+      </p>
+      <div class="contacts__list">
+        <a class="contacts__item" href="tel:+79000000000">
+          <span class="contacts__ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.56 2.81.69A2 2 0 0 1 22 16.92z"/></svg>
+          </span>
+          <span class="contacts__meta"><span class="contacts__label">Телефон</span><span class="contacts__value">+7 900 000-00-00</span></span>
+        </a>
+        <a class="contacts__item" href="https://wa.me/79000000000" target="_blank" rel="noopener">
+          <span class="contacts__ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02zM12.05 20.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24a8.2 8.2 0 0 1 8.23 8.25c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg>
+          </span>
+          <span class="contacts__meta"><span class="contacts__label">WhatsApp</span><span class="contacts__value">Написать сообщение</span></span>
+        </a>
+        <a class="contacts__item" href="https://t.me/idea_plus_mebel" target="_blank" rel="noopener">
+          <span class="contacts__ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M21.94 4.6 18.6 20.3c-.25 1.1-.9 1.38-1.83.86l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.16 9.4-8.49c.41-.36-.09-.57-.63-.21L5.16 13.1l-5-1.57c-1.09-.34-1.11-1.09.23-1.61l19.55-7.54c.91-.34 1.7.21 1.4 1.62z"/></svg>
+          </span>
+          <span class="contacts__meta"><span class="contacts__label">Telegram</span><span class="contacts__value">Открыть чат</span></span>
+        </a>
+        <a class="contacts__item" href="https://instagram.com/idea.plus.mebel" target="_blank" rel="noopener">
+          <span class="contacts__ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg>
+          </span>
+          <span class="contacts__meta"><span class="contacts__label">Instagram</span><span class="contacts__value">@idea.plus.mebel</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <svg class="mini-mark mini-mark--footer" viewBox="12 6 76 88" aria-hidden="true">
+    <path class="mini-mark__body" d="M18 12H82V78H18ZM26 78V88M74 78V88"/>
+    <path class="mini-mark__plus" d="M58 19V71M25 48H75"/>
+  </svg>
+  <span class="footer__word">ИДЕЯ ПЛЮС</span>
+  <span class="footer__copy">© <span id="year">2026</span> · Мебель на заказ</span>
+</footer>
+
+<!-- ====== FLOATING CALL ====== -->
+<a class="fab" href="tel:+79000000000" aria-label="Позвонить: +7 900 000-00-00">
+  <span class="fab__pulse" aria-hidden="true"></span>
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.69 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.33 1.85.56 2.81.69A2 2 0 0 1 22 16.92z"/></svg>
+</a>
+
+<!-- ====== LIGHTBOX ====== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Просмотр работы" hidden>
+  <div class="lightbox__backdrop" data-close></div>
+  <div class="lightbox__chrome">
+    <header class="lightbox__bar">
+      <div class="lightbox__caption">
+        <span class="lightbox__title" id="lb-title"></span>
+        <span class="lightbox__type" id="lb-type"></span>
+      </div>
+      <button class="lightbox__close" type="button" data-close aria-label="Закрыть">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </header>
+
+    <div class="lightbox__stage">
+      <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Предыдущая работа">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="lightbox__viewport">
+        <div class="lightbox__track" id="lb-track"></div>
+      </div>
+      <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Следующая работа">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <footer class="lightbox__foot">
+      <div class="lightbox__dots" id="lb-dots" aria-hidden="true"></div>
+      <span class="lightbox__counter" id="lb-counter"></span>
+    </footer>
+  </div>
+</div>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>
