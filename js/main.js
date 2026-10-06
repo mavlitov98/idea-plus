@@ -178,72 +178,97 @@
     const guideLines = $$('.bm-guides .bm-draw', root);
     const dims = $$('.bm-dim', root);
     const pencil = q('.bm-pencil');
-    const sides = $$('.bm-side', root);
-    const legs = $$('.bm-leg', root);
-    const body = q('.bm-body');
+    const beams = $$('.bm-beam', root);
+    const notch = q('.bm-notch');
+    const slide = q('.bm-slide');
+    const obj = q('.bm-obj');
+    const solid = q('.bm-solid');
     const sheen = q('#bm-sheen');
-    const plusArms = $$('.bm-plus-off .bm-draw', root);
     const led = q('.bm-led');
-    const spill = q('.bm-spill');
+    const halo = q('.bm-halo');
     const flash = q('.bm-flash');
+    const chips = $$('.bm-chips circle', root);
     const cutters = $$('.bm-cutter', root);
     const word = q('.brand-mark__word');
-    const touched = [guides, ...guideLines, ...dims, pencil, ...sides, ...legs, body,
-      ...plusArms, led, spill, flash, ...cutters, word];
+    const touched = [guides, ...guideLines, ...dims, pencil, ...beams, notch, slide, obj,
+      solid, led, halo, flash, ...chips, ...cutters, word];
 
     const draw = (el, p) => { el.style.strokeDashoffset = 100 * (1 - p); };
-    const sideLen = sides.map((s) => s.getTotalLength());
+    const beamLen = beams.map((b) => b.getTotalLength());
+    const SLIDE = 14; // вынос второго бруска «на зрителя» по оси глубины
+    let slideOffset = SLIDE;
+
+    // «резец» идёт по кончику рисуемой линии (второй брусок ещё вынесен вперёд)
+    const cut = (i, p) => {
+      const pt = beams[i].getPointAtLength(beamLen[i] * p);
+      const off = i === 1 ? slideOffset : 0;
+      cutters[i].setAttribute('cx', pt.x - off);
+      cutters[i].setAttribute('cy', pt.y + off);
+      cutters[i].style.opacity = p < 1 ? 1 : 0;
+    };
+
+    // стружка разлетается от стыков паза
+    const chipDir = chips.map((c) => {
+      const x = +c.getAttribute('cx') - 50, y = +c.getAttribute('cy') - 50;
+      const len = Math.hypot(x, y) || 1;
+      return [x / len, y / len, 7 + Math.random() * 7];
+    });
 
     const tracks = [
-      // 1. разметка: оси и размерные линии прочерчиваются от точек
-      ...guideLines.map((el, i) => ({ at: i * 55, dur: 620, ease: ease.inOut, fn: (p) => draw(el, p) })),
-      { at: 520, dur: 360, fn: (p) => dims.forEach((d) => { d.style.opacity = p; }) },
+      // 1. разметка: оси, лучи глубины 45° и размеры
+      ...guideLines.map((el, i) => ({ at: i * 45, dur: 600, ease: ease.inOut, fn: (p) => draw(el, p) })),
+      { at: 480, dur: 360, fn: (p) => dims.forEach((d) => { d.style.opacity = p; }) },
 
-      // 2. контур: два «резца» идут из нижнего угла и сходятся в верхнем
-      ...sides.map((el, i) => ({
-        at: 380, dur: 1050, ease: ease.inOut,
-        fn: (p) => {
-          draw(el, p);
-          const pt = el.getPointAtLength(sideLen[i] * p);
-          const c = cutters[i];
-          c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y);
-          c.style.opacity = p < 1 ? 1 : 0;
-        },
-      })),
-      { at: 1430, dur: 480, fn: (p) => {
-        flash.setAttribute('r', 1 + 9 * p);
-        flash.style.opacity = 1 - p;
+      // 2. карандаш: горизонтальный брусок с пазом, вертикальный — вынесен вперёд
+      { at: 350, dur: 900, ease: ease.inOut, fn: (p) => { draw(beams[0], p); cut(0, p); } },
+      { at: 650, dur: 900, ease: ease.inOut, fn: (p) => { draw(beams[1], p); cut(1, p); } },
+      { at: 1050, dur: 400, fn: (p) => draw(notch, p) },
+
+      // 3. сборка: брусок уходит в паз по оси глубины, щелчок
+      { at: 1600, dur: 300, ease: (t) => t * t * t, fn: (p) => {
+        slideOffset = SLIDE * (1 - p);
+        slide.style.transform = `translate(${-slideOffset}px, ${slideOffset}px)`;
       } },
-      ...legs.map((el) => ({ at: 1380, dur: 260, fn: (p) => draw(el, p) })),
-      ...plusArms.map((el) => ({ at: 1250, dur: 520, ease: ease.inOut, fn: (p) => draw(el, p) })),
+      { at: 1900, dur: 260, ease: ease.linear, fn: (p) => {
+        const a = 1.1 * (1 - p) * Math.sin(p * Math.PI * 5);
+        obj.style.transform = `translate(${a}px, ${-a * 0.6}px)`;
+      } },
+      { at: 1900, dur: 450, fn: (p) => {
+        flash.setAttribute('r', 2 + 14 * p);
+        flash.style.opacity = 1 - p;
+        chips.forEach((c, i) => {
+          const [dx, dy, dist] = chipDir[i];
+          c.style.transform = `translate(${dx * dist * p}px, ${dy * dist * p + 4 * p * p}px)`;
+          c.style.opacity = 1 - p;
+        });
+      } },
 
-      // 3. материал: карандаш набирает толщину латуни, разметка гаснет
-      { at: 1620, dur: 520, fn: (p) => {
-        body.style.opacity = p;
-        body.style.strokeWidth = 0.9 + 3.1 * p;
+      // 4. материал: дерево с латунной кромкой проявляется, разметка гаснет
+      { at: 1950, dur: 550, fn: (p) => {
+        solid.style.opacity = p;
         pencil.style.opacity = 1 - p;
         guides.style.opacity = 0.6 * (1 - p);
       } },
-      { at: 1850, dur: 800, ease: ease.inOut, fn: (p) => {
-        const x = -40 + 170 * p;
+      { at: 2200, dur: 850, ease: ease.inOut, fn: (p) => {
+        const x = -30 + 160 * p;
         sheen.setAttribute('x1', x - 15); sheen.setAttribute('x2', x + 15);
       } },
 
-      // 4. подсветка включается с дребезгом
-      { at: 2080, dur: 520, ease: ease.linear, fn: (p) => {
+      // 5. контурная подсветка включается с дребезгом
+      { at: 2400, dur: 560, ease: ease.linear, fn: (p) => {
         const o = flicker(p);
         led.style.opacity = o;
-        spill.style.opacity = o;
+        halo.style.opacity = o;
       } },
 
-      // 5. слово раскрывается от центра
-      { at: 2200, dur: 800, fn: (p) => {
+      // 6. слово раскрывается от центра
+      { at: 2550, dur: 800, fn: (p) => {
         const c = 50 * (1 - p);
         word.style.opacity = p;
         word.style.clipPath = `inset(-20% ${c}% -20% ${c}%)`;
         word.style.transform = `scaleX(${1.1 - 0.1 * p})`;
       } },
-      { at: 2250, dur: 0, fn: onReveal },
+      { at: 2600, dur: 0, fn: onReveal },
     ];
 
     playTimeline(tracks, () => {
