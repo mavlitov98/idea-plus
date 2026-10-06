@@ -177,40 +177,42 @@
   function initBrandMark(onReveal) {
     const root = heroMark;
     const q = (sel) => $(sel, root);
-    const tilt = q('.cube-tilt');
-    const plan = q('.cube-plan');
-    const planLines = $$('.cube-plan .bm-draw', root);
-    const outline = q('.cube-plan__outline');
-    const folds = q('.cube-plan__fold');
-    const labels = q('.cube-plan__labels');
-    const cutter = q('.cube-plan__cutter');
-    const cube = q('.cube');
-    const halo = q('.cube-halo');
-    const fronts = $$('.cube__draw', root);
+    const tilt = q('.piece-tilt');
+    const plan = q('.piece-plan');
+    const planLines = $$('.piece-plan .bm-draw', root);
+    const outline = q('.piece-plan__outline');
+    const folds = q('.piece-plan__fold');
+    const labels = q('.piece-plan__labels');
+    const cutter = q('.piece-plan__cutter');
+    const piece = q('.piece');
+    const plies = $$('.ply', root);
+    const plus = $$('.wall__plus, .wall__plus-glow', root);
     const word = q('.brand-mark__word');
-    const face = (n) => q(`.cube__face--${n}`);
-    const shade = (n) => q(`.cube__face--${n} > .cube__shade`);
+    const face = (n) => q(`.pf--${n}`);
+    const shade = (n) => q(`.pf--${n} > .pf__shade`);
 
-    // шарниры: ось и знак поворота каждой грани; финальная светотень — как в CSS
+    // шарниры: ось и знак поворота каждой панели; финальная светотень — как в CSS
     const HINGES = {
       front: ['X', 1], back: ['X', -1], lid: ['X', -1], left: ['Y', 1], right: ['Y', -1],
     };
-    const SHADE = { front: 0.08, left: 0.45, right: 0.55, back: 0.55, lid: 0.16, base: 0.6 };
-    const touched = [plan, ...planLines, folds, labels, cutter, cube, halo, word, ...fronts,
+    const SHADE = { front: 0.06, left: 0.42, right: 0.55, back: 0.55, lid: 0.1, base: 0.6 };
+    const touched = [plan, ...planLines, folds, labels, cutter, piece, word, ...plies, ...plus,
       ...Object.keys(SHADE).flatMap((n) => [face(n), shade(n)])];
 
-    const draw = (el, p) => { el.style.strokeDashoffset = 100 * (1 - p); };
+    // 101: при p = 0 штрих полностью скрыт, без «торца» нулевой длины
+    const draw = (el, p) => { el.style.strokeDashoffset = 101 * (1 - p); };
+    const vary = (name, v) => piece.style.setProperty(name, v);
     const outlineLen = outline.getTotalLength();
-    const size = () => face('base').offsetWidth;
+    const size = () => face('base').offsetHeight / 0.75; // высота дна = 0.75 стороны --s
 
-    // поза короба: развёртка «ложится на стол» и поворачивается в три четверти
-    // развёртка стартует опущенной на PLAN_SHIFT, чтобы чертёж не наезжал на подпись (= --plan-shift в CSS)
-    const PLAN_SHIFT = 1.3;
-    const TY0 = 0.5 + PLAN_SHIFT;
+    // развёртка стартует опущенной (= --plan-shift в CSS), чтобы чертёж не наезжал на подпись;
+    // 0.375 — смещение центра дна от центра развёртки
+    const PLAN_SHIFT = 0.8;
+    const TY0 = 0.375 + PLAN_SHIFT;
     const pose = { ty: TY0, ax: 0, az: 0, tz: 0, k: 1 };
     const setPose = () => {
       const S = size();
-      cube.style.transform = `translateY(${pose.ty * S}px) rotateX(${pose.ax}deg) rotateZ(${pose.az}deg) ` +
+      piece.style.transform = `translateY(${pose.ty * S}px) rotateX(${pose.ax}deg) rotateZ(${pose.az}deg) ` +
         `translateZ(${-pose.tz * S}px) scale3d(${pose.k}, ${pose.k}, ${pose.k})`;
     };
     const fold = (n, p) => {
@@ -219,6 +221,7 @@
       shade(n).style.opacity = SHADE[n] * p;
     };
     const lerp = (a, b, p) => a + (b - a) * p;
+    const backOut = (t) => 1 + 2.4 * Math.pow(t - 1, 3) + 1.4 * Math.pow(t - 1, 2);
 
     const tracks = [
       // 1. чертёж развёртки: оси, размеры, контур резцом, линии сгиба, подписи
@@ -234,15 +237,15 @@
       { at: 950, dur: 450, fn: (p) => { folds.style.opacity = p; labels.style.opacity = p; } },
 
       // 2. панели становятся деревом уже на ходу — плоской деревянной развёртки не видно
-      { at: 1620, dur: 420, fn: (p) => { cube.style.opacity = p; } },
+      { at: 1620, dur: 420, fn: (p) => { piece.style.opacity = p; } },
       { at: 1640, dur: 420, fn: (p) => { plan.style.opacity = 1 - p; } },
 
-      // 3. развёртка ложится и разворачивается, грани поднимаются, крышка захлопывается
+      // 3. развёртка ложится и разворачивается, панели поднимаются, крышка захлопывается
       { at: 1480, dur: 800, ease: ease.inOut, fn: (p) => {
-        pose.ty = lerp(TY0, 0, p); pose.ax = 58 * p; setPose();
+        pose.ty = lerp(TY0, 0, p); pose.ax = 66 * p; setPose();
       } },
-      { at: 1650, dur: 1100, ease: ease.inOut, fn: (p) => { pose.az = -42 * p; setPose(); } },
-      { at: 1560, dur: 950, ease: ease.inOut, fn: (p) => { pose.tz = 0.5 * p; setPose(); } },
+      { at: 1650, dur: 1100, ease: ease.inOut, fn: (p) => { pose.az = -30 * p; setPose(); } },
+      { at: 1560, dur: 950, ease: ease.inOut, fn: (p) => { pose.tz = 0.42 * p; setPose(); } },
       { at: 1560, dur: 560, ease: ease.inOut, fn: (p) => fold('front', p) },
       { at: 1640, dur: 560, ease: ease.inOut, fn: (p) => fold('left', p) },
       { at: 1700, dur: 560, ease: ease.inOut, fn: (p) => fold('right', p) },
@@ -250,37 +253,40 @@
       { at: 1800, dur: 300, fn: (p) => { shade('base').style.opacity = SHADE.base * p; } },
       { at: 2200, dur: 380, ease: (t) => t * t * t, fn: (p) => fold('lid', p) },
 
-      // 4. щелчок: модуль чуть «приседает», швы вспыхивают
-      { at: 2580, dur: 0, fn: () => cube.classList.add('is-sealed') },
+      // 4. щелчок: корпус чуть «приседает», швы вспыхивают
+      { at: 2580, dur: 0, fn: () => piece.classList.add('is-sealed') },
       { at: 2580, dur: 320, ease: ease.linear, fn: (p) => {
-        pose.k = 1 + 0.035 * Math.sin(p * Math.PI) * (1 - p * 0.4); setPose();
+        pose.k = 1 + 0.03 * Math.sin(p * Math.PI) * (1 - p * 0.4); setPose();
       } },
 
-      // 5. короб становится тумбой: растут ножки (и она чуть приподнимается),
-      //    светом прочерчиваются ящики, верхний выдвигается — внутри включается LED
-      { at: 2650, dur: 450, fn: (p) => {
-        cube.style.setProperty('--leg', p);
-        pose.tz = 0.5 - 0.14 * p; setPose();
-      } },
-      ...fronts.map((el, i) => ({ at: 2750 + i * 120, dur: 420, ease: ease.inOut, fn: (p) => draw(el, p) })),
-      { at: 3050, dur: 650, ease: (t) => 1 + 2.4 * Math.pow(t - 1, 3) + 1.4 * Math.pow(t - 1, 2),
-        fn: (p) => cube.style.setProperty('--out', (0.32 * p).toFixed(4)) },
-      { at: 3250, dur: 560, ease: ease.linear, fn: (p) => cube.style.setProperty('--lit', flicker(p).toFixed(3)) },
+      // 5. комод: вырастают ножки (сцена опускается, освобождая место стене), фасады — в рейку
+      { at: 2650, dur: 500, fn: (p) => { vary('--leg', p); pose.tz = lerp(0.42, 0.8, p); setPose(); } },
+      { at: 2750, dur: 500, fn: (p) => vary('--fr', p) },
 
-      // 6. слово раскрывается от центра
-      { at: 3550, dur: 800, fn: (p) => {
+      // 6. дверца распахивается, в нише включается LED-лента
+      { at: 3000, dur: 700, ease: backOut, fn: (p) => vary('--door', (-105 * p).toFixed(2)) },
+      { at: 3150, dur: 560, ease: ease.linear, fn: (p) => { const o = flicker(p).toFixed(3); vary('--lit', o); vary('--hl', o); } },
+
+      // 7. на стене слоями шпона рисуется «И⁺», загорается сердцевина и плюс
+      // слои идут почти вместе — растёт сразу полосатая фанерная лента, а не одинокая латунная черта
+      ...plies.map((el, i) => ({ at: 3400 + i * 35, dur: 750, ease: ease.inOut, fn: (p) => draw(el, p) })),
+      ...plus.map((el) => ({ at: 4050, dur: 260, fn: (p) => draw(el, p) })),
+      { at: 4050, dur: 520, ease: ease.linear, fn: (p) => vary('--wlit', flicker(p).toFixed(3)) },
+
+      // 8. слово раскрывается от центра
+      { at: 4150, dur: 800, fn: (p) => {
         const c = 50 * (1 - p);
         word.style.opacity = p;
         word.style.clipPath = `inset(-20% ${c}% -20% ${c}%)`;
         word.style.transform = `scaleX(${1.1 - 0.1 * p})`;
       } },
-      { at: 3600, dur: 0, fn: onReveal },
+      { at: 4200, dur: 0, fn: onReveal },
     ];
 
     playTimeline(tracks, () => {
       root.classList.add('is-done');
       touched.forEach((el) => el.removeAttribute('style'));
-      setTimeout(() => cube.classList.remove('is-sealed'), 1400);
+      setTimeout(() => piece.classList.remove('is-sealed'), 1400);
     });
 
     // модуль поворачивается за курсором в настоящем 3D (только мышь)

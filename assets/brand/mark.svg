@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="4 4 100 92">
+  <!-- Эмблема «И⁺» — монограмма из гнутой фанеры: слои латунь / тёмное дерево, LED-сердцевина -->
+  <defs>
+    <linearGradient id="b" gradientUnits="userSpaceOnUse" x1="14" y1="16" x2="86" y2="84">
+      <stop offset="0" stop-color="#F6E4C1"/><stop offset=".38" stop-color="#D3AF7C"/>
+      <stop offset=".62" stop-color="#8E6E42"/><stop offset="1" stop-color="#E3C592"/>
+    </linearGradient>
+    <filter id="g" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.2"/></filter>
+  </defs>
+  <g fill="none">
+    <path d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78" stroke="url(#b)" stroke-width="11"/>
+    <path d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78" stroke="#2A231C" stroke-width="8.6"/>
+    <path d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78" stroke="#D3AF7C" stroke-width="6.2"/>
+    <path d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78" stroke="#2A231C" stroke-width="3.8"/>
+    <path d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78" stroke="#FFD9A3" stroke-width="3" opacity=".6" filter="url(#g)"/>
+    <path d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78" stroke="#FFF1DA" stroke-width="1.1"/>
+    <g stroke-linecap="round">
+      <path d="M90 13.5V22.5M85.5 18H94.5" stroke="#FFD9A3" stroke-width="3.6" opacity=".6" filter="url(#g)"/>
+      <path d="M90 13.5V22.5M85.5 18H94.5" stroke="#FFF1DA" stroke-width="1.6"/>
+    </g>
+  </g>
+</svg>

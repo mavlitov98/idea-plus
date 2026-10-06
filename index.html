@@ -47,34 +47,10 @@
 <!-- ====== NAV ====== -->
 <header class="nav" id="nav">
   <a class="nav__brand" href="#top" aria-label="Идея Плюс — на главную">
-    <span class="nav__cube" aria-hidden="true">
-      <div class="cube-stage">
-
-        <span class="cube-halo" aria-hidden="true"></span>
-
-        <div class="cube-tilt">
-          <div class="cube-sway">
-            <div class="cube">
-              <div class="cube__face cube__face--base"><span class="cube__skin"></span><span class="cube__shade"></span>
-                <div class="cube__face cube__face--front"><span class="cube__skin"><svg class="cube__mono" viewBox="0 0 100 100" aria-hidden="true">
-                    <path class="cube__mono-groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="cube__mono-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="cube__mono-led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="cube__mono-groove" d="M90 10V22M84 16H96"/>
-                    <path class="cube__mono-glow" d="M90 10V22M84 16H96"/>
-                    <path class="cube__mono-led" d="M90 10V22M84 16H96"/>
-                  </svg></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--left"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--right"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--back"><span class="cube__skin"></span><span class="cube__shade"></span>
-                  <div class="cube__face cube__face--lid"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </span>
+    <svg class="mark nav__mark" viewBox="8 8 92 84" aria-hidden="true">
+      <path class="mark__l1" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mark__l2" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mark__l3" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+      <path class="mark__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mark__plus" d="M90 13.5V22.5M85.5 18H94.5"/>
+    </svg>
     <span class="nav__word">ИДЕЯ ПЛЮС</span>
   </a>
   <nav class="nav__links" aria-label="Основная навигация">
@@ -146,58 +122,77 @@
 
     <p class="hero__eyebrow reveal">Мастерская дизайнерской мебели&nbsp;·&nbsp;Ставрополь</p>
 
+    <!-- Hero — комод с рейчатыми фасадами, собранный из развёртки (настоящий CSS 3D),
+         и монограмма «И⁺» из гнутой фанеры на стене над ним.
+         Сценарий: чертёж развёртки → панели становятся деревом → развёртка складывается
+         в корпус → вырастают ножки, фасады покрываются рейками → дверца открывает нишу
+         с подсветкой → на стене слоями шпона рисуется «И⁺» и загорается. -->
     <div class="brand-mark brand-mark--hero" id="brand-hero">
-      <div class="cube-stage">
-        <svg class="cube-plan" viewBox="0 0 300 400" aria-hidden="true">
-          <g class="cube-plan__guides">
-            <path class="bm-draw" pathLength="100" d="M150 -40V440"/>
-            <path class="bm-draw" pathLength="100" d="M-40 250H340"/>
-            <path class="bm-draw" pathLength="100" d="M100 -14H200M96 -10L104 -18M196 -10L204 -18"/>
-            <path class="bm-draw" pathLength="100" d="M314 200V300M310 204L318 196M310 304L318 296"/>
+      <div class="piece-stage">
+        <svg class="piece-plan" viewBox="0 0 390 320" aria-hidden="true">
+          <g class="piece-plan__guides">
+            <path class="bm-draw" pathLength="100" d="M195 -40V360"/>
+            <path class="bm-draw" pathLength="100" d="M-40 197.5H430"/>
+            <path class="bm-draw" pathLength="100" d="M85 -14H305M81 -10L89 -18M301 -10L309 -18"/>
+            <path class="bm-draw" pathLength="100" d="M404 160V235M400 164L408 156M400 239L408 231"/>
           </g>
-          <path class="cube-plan__fold" d="M100 100H200M100 200H200M100 300H200M100 200V300M200 200V300"/>
-          <path class="bm-draw cube-plan__outline" pathLength="100" d="M100 0H200V200H300V300H200V400H100V300H0V200H100Z"/>
-          <g class="cube-plan__labels">
-            <text x="150" y="-20">400</text>
-            <text x="326" y="250" transform="rotate(90 326 250)">400</text>
-            <text x="150" y="53">КРЫШКА</text>
-            <text x="150" y="153">ЗАДНЯЯ</text>
-            <text x="150" y="253">ДНО</text>
-            <text x="150" y="353">ФАСАД</text>
-            <text x="50" y="253">БОК</text>
-            <text x="250" y="253">БОК</text>
-            <text class="cube-plan__title" x="0" y="392">ТУМБА · РАЗВЁРТКА 1:10</text>
+          <path class="piece-plan__fold" d="M85 75H305M85 160H305M85 235H305M85 160V235M305 160V235"/>
+          <path class="bm-draw piece-plan__outline" pathLength="100" d="M85 0H305V160H390V235H305V320H85V235H0V160H85Z"/>
+          <g class="piece-plan__labels">
+            <text x="195" y="-20">1800</text>
+            <text x="416" y="197.5" transform="rotate(90 416 197.5)">450</text>
+            <text x="195" y="41">КРЫШКА</text>
+            <text x="195" y="121">ЗАДНЯЯ</text>
+            <text x="195" y="201">ДНО</text>
+            <text x="195" y="281">ФАСАД</text>
+            <text x="42" y="201">БОК</text>
+            <text x="348" y="201">БОК</text>
+            <text class="piece-plan__title" x="0" y="300">КОМОД · РАЗВЁРТКА 1:10</text>
           </g>
-          <circle class="cube-plan__cutter" r="3.5"/>
+          <circle class="piece-plan__cutter" r="3.5"/>
         </svg>
 
-        <span class="cube-halo" aria-hidden="true"></span>
+        <span class="piece-halo" aria-hidden="true"></span>
 
-        <div class="cube-tilt">
-          <div class="cube-sway">
-            <div class="cube">
-              <div class="cube__face cube__face--base"><span class="cube__skin"></span><span class="cube__shade"></span>
-                <span class="cube__leg cube__leg--1"></span><span class="cube__leg cube__leg--2"></span>
-                <span class="cube__leg cube__leg--3"></span><span class="cube__leg cube__leg--4"></span>
-                <div class="cube__face cube__face--front"><span class="cube__skin"></span><span class="cube__shade"></span>
-                  <span class="cube__cavity"></span>
-                  <svg class="cube__fronts" viewBox="0 0 100 100" aria-hidden="true">
-                    <path class="cube__draw" pathLength="100" d="M5 51H95"/>
-                    <path class="cube__draw cube__handle" pathLength="100" d="M40 74H60"/>
+        <div class="piece-tilt">
+          <div class="piece-sway">
+            <div class="piece">
+              <div class="pf pf--base"><span class="pf__skin"></span><span class="pf__shade"></span>
+                <span class="floor-shadow"></span>
+                <span class="leg leg--1"></span><span class="leg leg--2"></span><span class="leg leg--3"></span><span class="leg leg--4"></span>
+                <div class="wall">
+                  <span class="wall__glow"></span>
+                  <svg class="wall__mono" viewBox="8 8 92 84" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="ply-brass" gradientUnits="userSpaceOnUse" x1="14" y1="16" x2="86" y2="84">
+                        <stop offset="0" stop-color="#F6E4C1"/><stop offset=".38" stop-color="#D3AF7C"/>
+                        <stop offset=".62" stop-color="#8E6E42"/><stop offset="1" stop-color="#E3C592"/>
+                      </linearGradient>
+                    </defs>
+                      <path class="wall__draw ply ply--1" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                      <path class="wall__draw ply ply--2" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                      <path class="wall__draw ply ply--3" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                      <path class="wall__draw ply ply--4" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                      <path class="wall__draw ply ply--5" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="wall__led-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="wall__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="wall__draw wall__plus-glow" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
+                    <path class="wall__draw wall__plus" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
                   </svg>
-                  <div class="drawer">
-                    <span class="drawer__bottom"></span>
-                    <span class="drawer__side drawer__side--l"></span>
-                    <span class="drawer__side drawer__side--r"></span>
-                    <span class="drawer__inner"></span>
-                    <span class="drawer__haze"></span>
-                    <span class="drawer__front"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="cube__draw cube__handle" pathLength="100" d="M38 50H62"/></svg></span>
-                  </div>
                 </div>
-                <div class="cube__face cube__face--left"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--right"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--back"><span class="cube__skin"></span><span class="cube__shade"></span>
-                  <div class="cube__face cube__face--lid"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                <div class="pf pf--front"><span class="pf__skin"></span><span class="pf__shade"></span>
+                  <span class="niche niche--back"></span>
+                  <span class="niche niche--floor"></span>
+                  <span class="niche niche--wall"></span>
+                  <span class="niche niche--shelf"></span>
+                  <span class="niche-led niche-led--top"></span><span class="niche-led niche-led--shelf"></span>
+                  <span class="door door--1"><span class="door__handle"></span></span><span class="door door--2"><span class="door__handle"></span></span>
+                  <span class="door door--open"><span class="door__handle"></span></span>
+                </div>
+                <div class="pf pf--left"><span class="pf__skin"></span><span class="pf__shade"></span></div>
+                <div class="pf pf--right"><span class="pf__skin"></span><span class="pf__shade"></span></div>
+                <div class="pf pf--back"><span class="pf__skin"></span><span class="pf__shade"></span>
+                  <div class="pf pf--lid"><span class="pf__skin"></span><span class="pf__shade"></span></div>
                 </div>
               </div>
             </div>
@@ -361,8 +356,9 @@
 
   <!-- ====== CONTACTS ====== -->
   <section class="contacts section" id="contacts" data-sheet="06" data-title="Контакты">
-    <svg class="contacts__cube" viewBox="0 0 100 100" aria-hidden="true">
-      <path pathLength="100" d="M50 14L81 32L50 50L19 32Z M19 32V68L50 86L81 68V32 M50 50V86"/>
+    <svg class="contacts__mark" viewBox="8 8 92 84" aria-hidden="true">
+      <path pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+      <path pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
     </svg>
     <p class="label reveal"><span class="label__num">06</span>Контакты</p>
     <h2 class="contacts__title reveal">Расскажите о&nbsp;своём проекте</h2>
@@ -380,34 +376,10 @@
 
 <footer class="footer">
   <div class="footer__brand">
-    <span class="footer__cube" aria-hidden="true">
-      <div class="cube-stage">
-
-        <span class="cube-halo" aria-hidden="true"></span>
-
-        <div class="cube-tilt">
-          <div class="cube-sway">
-            <div class="cube">
-              <div class="cube__face cube__face--base"><span class="cube__skin"></span><span class="cube__shade"></span>
-                <div class="cube__face cube__face--front"><span class="cube__skin"><svg class="cube__mono" viewBox="0 0 100 100" aria-hidden="true">
-                    <path class="cube__mono-groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="cube__mono-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="cube__mono-led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="cube__mono-groove" d="M90 10V22M84 16H96"/>
-                    <path class="cube__mono-glow" d="M90 10V22M84 16H96"/>
-                    <path class="cube__mono-led" d="M90 10V22M84 16H96"/>
-                  </svg></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--left"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--right"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                <div class="cube__face cube__face--back"><span class="cube__skin"></span><span class="cube__shade"></span>
-                  <div class="cube__face cube__face--lid"><span class="cube__skin"></span><span class="cube__shade"></span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </span>
+    <svg class="mark footer__mark" viewBox="8 8 92 84" aria-hidden="true">
+      <path class="mark__l1" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mark__l2" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mark__l3" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+      <path class="mark__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mark__plus" d="M90 13.5V22.5M85.5 18H94.5"/>
+    </svg>
     <span class="footer__word">ИДЕЯ ПЛЮС</span>
   </div>
   <span class="footer__copy">© <span id="year">2026</span> · Дизайнерская мебель на заказ · Ставрополь</span>
