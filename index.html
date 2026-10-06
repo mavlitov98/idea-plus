@@ -47,12 +47,34 @@
 <!-- ====== NAV ====== -->
 <header class="nav" id="nav">
   <a class="nav__brand" href="#top" aria-label="Идея Плюс — на главную">
-    <svg class="mini-mark" viewBox="14 10 72 80" aria-hidden="true">
-      <path class="mini-mark__top" d="M50 14L81 32L50 50L19 32Z"/>
-      <path class="mini-mark__left" d="M19 32L50 50V86L19 68Z"/>
-      <path class="mini-mark__right" d="M50 50L81 32V68L50 86Z"/>
-      <g transform="matrix(.31 -.18 0 .36 50 50)"><path class="mini-mark__groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mini-mark__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/></g>
-    </svg>
+    <span class="nav__cube" aria-hidden="true">
+      <div class="cube-stage">
+
+        <span class="cube-halo" aria-hidden="true"></span>
+
+        <div class="cube-tilt">
+          <div class="cube-sway">
+            <div class="cube">
+              <div class="cube__face cube__face--base"><span class="cube__skin"></span><span class="cube__shade"></span>
+                <div class="cube__face cube__face--front"><span class="cube__skin"><svg class="cube__mono" viewBox="0 0 100 100" aria-hidden="true">
+                    <path class="cube__mono-groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-groove" d="M90 10V22M84 16H96"/>
+                    <path class="cube__mono-glow" d="M90 10V22M84 16H96"/>
+                    <path class="cube__mono-led" d="M90 10V22M84 16H96"/>
+                  </svg></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--left"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--right"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--back"><span class="cube__skin"></span><span class="cube__shade"></span>
+                  <div class="cube__face cube__face--lid"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </span>
     <span class="nav__word">ИДЕЯ ПЛЮС</span>
   </a>
   <nav class="nav__links" aria-label="Основная навигация">
@@ -63,32 +85,51 @@
     <a href="#contacts">Контакты</a>
   </nav>
   <a class="nav__tel" href="tel:+79614506212">+7 961 450-62-12</a>
+  <!-- мобильный индикатор раздела — как номер листа в комплекте чертежей -->
+  <div class="nav__sheet" aria-hidden="true">
+    <span class="nav__sheet-num" id="sheet-num">00</span>
+    <span class="nav__sheet-sep"></span>
+    <span class="nav__sheet-name"><span id="sheet-name">Главная</span></span>
+  </div>
   <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu">
-    <span class="burger__box" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="burger__label" aria-hidden="true"><span>Меню</span><span>Закрыть</span></span>
+    <span class="burger__box" aria-hidden="true"><i></i><i></i></span>
   </button>
+  <span class="nav__progress" aria-hidden="true"><span id="nav-progress"></span></span>
 </header>
 
-<!-- ====== FULLSCREEN MENU ====== -->
+<!-- ====== MENU: выдвижной ящик с LED-подсветкой ====== -->
 <nav class="menu" id="menu" aria-label="Меню" aria-hidden="true" inert>
-  <div class="menu__veil" aria-hidden="true"></div>
-  <div class="menu__inner">
-    <ul class="menu__links">
-      <li><a href="#works"><span class="menu__num">01</span>Работы</a></li>
-      <li><a href="#services"><span class="menu__num">02</span>Услуги</a></li>
-      <li><a href="#process"><span class="menu__num">03</span>Процесс</a></li>
-      <li><a href="#about"><span class="menu__num">04</span>О нас</a></li>
-      <li><a href="#contacts"><span class="menu__num">05</span>Контакты</a></li>
-    </ul>
-    <div class="menu__foot">
-      <a class="menu__tel" href="tel:+79614506212">+7 961 450-62-12</a>
-      <a class="menu__ig" href="https://instagram.com/ideaplus.2656221" target="_blank" rel="noopener">@ideaplus.2656221</a>
+  <div class="menu__panel">
+    <span class="menu__grid" aria-hidden="true"></span>
+    <div class="menu__inner">
+      <p class="menu__label">Разделы</p>
+      <ul class="menu__links">
+        <li><a href="#works" data-section="works"><span class="menu__num">01</span><span class="menu__word"><span>Портфолио</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="#services" data-section="services"><span class="menu__num">02</span><span class="menu__word"><span>Услуги</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="#process" data-section="process"><span class="menu__num">03</span><span class="menu__word"><span>Процесс</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="#about" data-section="about"><span class="menu__num">04</span><span class="menu__word"><span>О мастерской</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="#faq" data-section="faq"><span class="menu__num">05</span><span class="menu__word"><span>Вопросы</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+        <li><a href="#contacts" data-section="contacts"><span class="menu__num">06</span><span class="menu__word"><span>Контакты</span></span><span class="menu__arrow" aria-hidden="true">→</span></a></li>
+      </ul>
+      <div class="menu__foot">
+        <a class="menu__tel" href="tel:+79614506212">+7 961 450-62-12</a>
+        <div class="menu__pills">
+          <a class="menu__pill" href="https://wa.me/79614506212" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02zM12.05 20.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24a8.2 8.2 0 0 1 8.23 8.25c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg><span>WhatsApp</span></a>
+          <a class="menu__pill" href="https://t.me/+79614506212" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.94 4.6 18.6 20.3c-.25 1.1-.9 1.38-1.83.86l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.16 9.4-8.49c.41-.36-.09-.57-.63-.21L5.16 13.1l-5-1.57c-1.09-.34-1.11-1.09.23-1.61l19.55-7.54c.91-.34 1.7.21 1.4 1.62z"/></svg><span>Telegram</span></a>
+          <a class="menu__pill" href="https://max.ru/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/><path d="M8 15V9l4 4 4-4v6"/></svg><span>MAX</span></a>
+          <a class="menu__pill" href="https://instagram.com/ideaplus.2656221" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a>
+        </div>
+        <p class="menu__city">Ставрополь · дизайнерская мебель на заказ</p>
+      </div>
     </div>
+    <span class="menu__led" aria-hidden="true"></span>
   </div>
 </nav>
 
 <main id="top">
   <!-- ====== HERO: чертёжный лист ====== -->
-  <section class="hero" id="hero">
+  <section class="hero" id="hero" data-sheet="00" data-title="Главная">
     <div class="sheet" aria-hidden="true">
       <span class="sheet__corner sheet__corner--tl"></span>
       <span class="sheet__corner sheet__corner--tr"></span>
@@ -103,7 +144,7 @@
       </dl>
     </div>
 
-    <p class="hero__eyebrow reveal">Мастерская дизайнерской мебели · Ставрополь</p>
+    <p class="hero__eyebrow reveal">Мастерская дизайнерской мебели&nbsp;·&nbsp;Ставрополь</p>
 
     <div class="brand-mark brand-mark--hero" id="brand-hero">
       <div class="cube-stage">
@@ -170,13 +211,13 @@
   </section>
 
   <!-- ====== MANIFESTO: слова загораются при прокрутке ====== -->
-  <section class="manifesto section" id="manifesto">
+  <section class="manifesto section" id="manifesto" data-sheet="00" data-title="Принцип">
     <p class="label reveal"><span class="label__num">00</span>Принцип</p>
     <p class="manifesto__text" id="manifesto-text">Мы не продаём типовую мебель. Каждый предмет начинается с <em>чертежа</em> под ваш дом — и заканчивается <em>вещью</em>, которой не было ни у кого до вас.</p>
   </section>
 
   <!-- ====== WORKS ====== -->
-  <section class="works section" id="works">
+  <section class="works section" id="works" data-sheet="01" data-title="Портфолио">
     <header class="head">
       <p class="label reveal"><span class="label__num">01</span>Портфолио</p>
       <h2 class="head__title reveal">Наши работы</h2>
@@ -187,7 +228,7 @@
   </section>
 
   <!-- ====== SERVICES: полки с подсветкой ====== -->
-  <section class="services section" id="services">
+  <section class="services section" id="services" data-sheet="02" data-title="Услуги">
     <header class="head">
       <p class="label reveal"><span class="label__num">02</span>Услуги</p>
       <h2 class="head__title reveal">Что мы делаем</h2>
@@ -218,7 +259,7 @@
   </section>
 
   <!-- ====== PROCESS: свет течёт по шагам ====== -->
-  <section class="process section" id="process">
+  <section class="process section" id="process" data-sheet="03" data-title="Процесс">
     <header class="head">
       <p class="label reveal"><span class="label__num">03</span>Как мы работаем</p>
       <h2 class="head__title reveal">От чертежа до изделия</h2>
@@ -257,7 +298,7 @@
   </section>
 
   <!-- ====== ABOUT ====== -->
-  <section class="about section" id="about">
+  <section class="about section" id="about" data-sheet="04" data-title="О мастерской">
     <div class="about__grid">
       <div class="about__lead">
         <p class="label reveal"><span class="label__num">04</span>О мастерской</p>
@@ -280,7 +321,7 @@
   </section>
 
   <!-- ====== FAQ ====== -->
-  <section class="faq section" id="faq">
+  <section class="faq section" id="faq" data-sheet="05" data-title="Вопросы">
     <header class="head">
       <p class="label reveal"><span class="label__num">05</span>Вопросы</p>
       <h2 class="head__title reveal">Частые вопросы</h2>
@@ -310,7 +351,7 @@
   </section>
 
   <!-- ====== CONTACTS ====== -->
-  <section class="contacts section" id="contacts">
+  <section class="contacts section" id="contacts" data-sheet="06" data-title="Контакты">
     <svg class="contacts__cube" viewBox="0 0 100 100" aria-hidden="true">
       <path pathLength="100" d="M50 14L81 32L50 50L19 32Z M19 32V68L50 86L81 68V32 M50 50V86"/>
     </svg>
@@ -330,12 +371,34 @@
 
 <footer class="footer">
   <div class="footer__brand">
-    <svg class="mini-mark mini-mark--footer" viewBox="14 10 72 80" aria-hidden="true">
-    <path class="mini-mark__top" d="M50 14L81 32L50 50L19 32Z"/>
-    <path class="mini-mark__left" d="M19 32L50 50V86L19 68Z"/>
-    <path class="mini-mark__right" d="M50 50L81 32V68L50 86Z"/>
-    <g transform="matrix(.31 -.18 0 .36 50 50)"><path class="mini-mark__groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mini-mark__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/></g>
-  </svg>
+    <span class="footer__cube" aria-hidden="true">
+      <div class="cube-stage">
+
+        <span class="cube-halo" aria-hidden="true"></span>
+
+        <div class="cube-tilt">
+          <div class="cube-sway">
+            <div class="cube">
+              <div class="cube__face cube__face--base"><span class="cube__skin"></span><span class="cube__shade"></span>
+                <div class="cube__face cube__face--front"><span class="cube__skin"><svg class="cube__mono" viewBox="0 0 100 100" aria-hidden="true">
+                    <path class="cube__mono-groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-groove" d="M90 10V22M84 16H96"/>
+                    <path class="cube__mono-glow" d="M90 10V22M84 16H96"/>
+                    <path class="cube__mono-led" d="M90 10V22M84 16H96"/>
+                  </svg></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--left"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--right"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--back"><span class="cube__skin"></span><span class="cube__shade"></span>
+                  <div class="cube__face cube__face--lid"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </span>
     <span class="footer__word">ИДЕЯ ПЛЮС</span>
   </div>
   <span class="footer__copy">© <span id="year">2026</span> · Дизайнерская мебель на заказ · Ставрополь</span>

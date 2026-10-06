@@ -47,7 +47,10 @@
   const yearEl = $('#year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ---------- fullscreen menu ---------- */
+  // текущий раздел страницы — обновляется наблюдателем ниже, читается меню
+  let currentSection = 'hero';
+
+  /* ---------- меню: выдвижной ящик ---------- */
   (() => {
     const burger = $('#burger');
     const menu = $('#menu');
@@ -57,15 +60,10 @@
 
     const isOpen = () => document.body.classList.contains('menu-open');
 
-    function syncOrigin() {
-      const r = burger.getBoundingClientRect();
-      menu.style.setProperty('--mx', (r.left + r.width / 2) + 'px');
-      menu.style.setProperty('--my', (r.top + r.height / 2) + 'px');
-    }
-
     function open() {
       lastFocus = document.activeElement;
-      syncOrigin();
+      // отмечаем раздел, в котором сейчас находимся
+      links.forEach((a) => a.classList.toggle('is-current', a.dataset.section === currentSection));
       document.body.classList.add('menu-open');
       burger.setAttribute('aria-expanded', 'true');
       burger.setAttribute('aria-label', 'Закрыть меню');
@@ -206,7 +204,10 @@
     const size = () => face('base').offsetWidth;
 
     // поза короба: развёртка «ложится на стол» и поворачивается в три четверти
-    const pose = { ty: 0.5, ax: 0, az: 0, tz: 0, k: 1 };
+    // развёртка стартует опущенной на PLAN_SHIFT, чтобы чертёж не наезжал на подпись (= --plan-shift в CSS)
+    const PLAN_SHIFT = 1.3;
+    const TY0 = 0.5 + PLAN_SHIFT;
+    const pose = { ty: TY0, ax: 0, az: 0, tz: 0, k: 1 };
     const setPose = () => {
       const S = size();
       cube.style.transform = `translateY(${pose.ty * S}px) rotateX(${pose.ax}deg) rotateZ(${pose.az}deg) ` +
@@ -238,7 +239,7 @@
 
       // 3. развёртка ложится и разворачивается, грани поднимаются, крышка захлопывается
       { at: 1480, dur: 800, ease: ease.inOut, fn: (p) => {
-        pose.ty = lerp(0.5, 0, p); pose.ax = 58 * p; setPose();
+        pose.ty = lerp(TY0, 0, p); pose.ax = 58 * p; setPose();
       } },
       { at: 1650, dur: 1100, ease: ease.inOut, fn: (p) => { pose.az = -42 * p; setPose(); } },
       { at: 1560, dur: 950, ease: ease.inOut, fn: (p) => { pose.tz = 0.5 * p; setPose(); } },
@@ -473,9 +474,14 @@
 
   /* ---------- единый обработчик прокрутки для «живых» секций ---------- */
   let scrollRaf = 0;
+  const progress = $('#nav-progress');
   function onScrollFx() {
     scrollRaf = 0;
     const vh = window.innerHeight;
+    if (progress) {
+      const max = document.documentElement.scrollHeight - vh;
+      progress.style.setProperty('--p', max > 0 ? (window.scrollY / max).toFixed(4) : 0);
+    }
     if (words.length) {
       const r = manifesto.getBoundingClientRect();
       // текст «прочитан» целиком, когда его низ поднялся до 45% экрана
@@ -529,14 +535,26 @@
     } else contacts.classList.add('is-in');
   }
 
-  /* ---------- текущий раздел подсвечивается в шапке ---------- */
+  /* ---------- текущий раздел: подсветка в шапке и мобильный индикатор «листа» ---------- */
   const navLinks = $$('.nav__links a');
-  if (navLinks.length && 'IntersectionObserver' in window) {
+  const sheet = $('.nav__sheet');
+  const sheetNum = $('#sheet-num');
+  const sheetName = $('#sheet-name');
+  if ('IntersectionObserver' in window) {
     const byId = new Map(navLinks.map((a) => [a.getAttribute('href').slice(1), a]));
+    const setSheet = (sec) => {
+      if (!sheet || sheetName.textContent === sec.dataset.title) return;
+      sheetNum.textContent = sec.dataset.sheet;
+      sheetName.textContent = sec.dataset.title;
+      sheet.classList.remove('is-swap'); void sheet.offsetWidth; sheet.classList.add('is-swap');
+    };
     const secIO = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        currentSection = e.target.id;
         // раздел без пункта в шапке (hero, манифест, FAQ) снимает подсветку
-        if (e.isIntersecting) navLinks.forEach((a) => a.classList.toggle('is-current', a === byId.get(e.target.id)));
+        navLinks.forEach((a) => a.classList.toggle('is-current', a === byId.get(e.target.id)));
+        if (e.target.dataset.title) setSheet(e.target);
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
     $$('main section[id]').forEach((sec) => secIO.observe(sec));
