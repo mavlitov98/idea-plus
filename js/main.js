@@ -186,7 +186,7 @@
     const cutter = q('.cube-plan__cutter');
     const cube = q('.cube');
     const halo = q('.cube-halo');
-    const mono = q('.cube__mono');
+    const fronts = $$('.cube__draw', root);
     const word = q('.brand-mark__word');
     const face = (n) => q(`.cube__face--${n}`);
     const shade = (n) => q(`.cube__face--${n} > .cube__shade`);
@@ -196,7 +196,7 @@
       front: ['X', 1], back: ['X', -1], lid: ['X', -1], left: ['Y', 1], right: ['Y', -1],
     };
     const SHADE = { front: 0.08, left: 0.45, right: 0.55, back: 0.55, lid: 0.16, base: 0.6 };
-    const touched = [plan, ...planLines, folds, labels, cutter, cube, halo, mono, word,
+    const touched = [plan, ...planLines, folds, labels, cutter, cube, halo, word, ...fronts,
       ...Object.keys(SHADE).flatMap((n) => [face(n), shade(n)])];
 
     const draw = (el, p) => { el.style.strokeDashoffset = 100 * (1 - p); };
@@ -256,20 +256,25 @@
         pose.k = 1 + 0.035 * Math.sin(p * Math.PI) * (1 - p * 0.4); setPose();
       } },
 
-      // 5. на фасаде загорается «И⁺», вокруг — тёплое пятно
-      { at: 2700, dur: 560, ease: ease.linear, fn: (p) => {
-        const o = flicker(p);
-        mono.style.opacity = o; halo.style.opacity = o;
+      // 5. короб становится тумбой: растут ножки (и она чуть приподнимается),
+      //    светом прочерчиваются ящики, верхний выдвигается — внутри включается LED
+      { at: 2650, dur: 450, fn: (p) => {
+        cube.style.setProperty('--leg', p);
+        pose.tz = 0.5 - 0.14 * p; setPose();
       } },
+      ...fronts.map((el, i) => ({ at: 2750 + i * 120, dur: 420, ease: ease.inOut, fn: (p) => draw(el, p) })),
+      { at: 3050, dur: 650, ease: (t) => 1 + 2.4 * Math.pow(t - 1, 3) + 1.4 * Math.pow(t - 1, 2),
+        fn: (p) => cube.style.setProperty('--out', (0.32 * p).toFixed(4)) },
+      { at: 3250, dur: 560, ease: ease.linear, fn: (p) => cube.style.setProperty('--lit', flicker(p).toFixed(3)) },
 
       // 6. слово раскрывается от центра
-      { at: 2950, dur: 800, fn: (p) => {
+      { at: 3550, dur: 800, fn: (p) => {
         const c = 50 * (1 - p);
         word.style.opacity = p;
         word.style.clipPath = `inset(-20% ${c}% -20% ${c}%)`;
         word.style.transform = `scaleX(${1.1 - 0.1 * p})`;
       } },
-      { at: 3000, dur: 0, fn: onReveal },
+      { at: 3600, dur: 0, fn: onReveal },
     ];
 
     playTimeline(tracks, () => {
