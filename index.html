@@ -24,11 +24,16 @@
 
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-  <script>document.documentElement.classList.add('js')</script>
+  <script>
+    // html.js включает стартовый кадр интро. Предохранитель: если скрипт сайта не успел
+    // запустить интро за 4 с (очень медленная сеть или ошибка загрузки) — показываем готовую сцену.
+    document.documentElement.classList.add('js');
+    setTimeout(function () { if (!window.__introStarted) document.documentElement.classList.remove('js'); }, 4000);
+  </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- шрифты лежат на сайте; два главных файла грузим заранее, чтобы заголовки не «перескакивали» -->
+  <link rel="preload" href="assets/fonts/noto-serif-display-normal-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/manrope-normal-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
 
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -93,7 +98,7 @@
         <div class="menu__pills">
           <a class="menu__pill" href="https://wa.me/79614506212" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02zM12.05 20.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24a8.2 8.2 0 0 1 8.23 8.25c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg><span>WhatsApp</span></a>
           <a class="menu__pill" href="https://t.me/+79614506212" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.94 4.6 18.6 20.3c-.25 1.1-.9 1.38-1.83.86l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.16 9.4-8.49c.41-.36-.09-.57-.63-.21L5.16 13.1l-5-1.57c-1.09-.34-1.11-1.09.23-1.61l19.55-7.54c.91-.34 1.7.21 1.4 1.62z"/></svg><span>Telegram</span></a>
-          <a class="menu__pill" href="https://max.ru/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/><path d="M8 15V9l4 4 4-4v6"/></svg><span>MAX</span></a>
+          <a class="menu__pill" href="https://max.ru/" target="_blank" rel="noopener"><svg viewBox="98 98 806 806" width="18" height="18" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M508.1719971,871.0396729 c-74.6478577,0-109.3381958-10.8974609-169.6376648-54.4874268 c-38.1412354,49.0386963-158.9217987,87.3615723-164.1889191,21.7949829c0-49.2203369-10.8975067-90.812439-23.2480011-136.218689 c-14.7115936-55.9404907-31.4210892-118.237854-31.4210892-208.5054321 c0-215.5888062,176.9026489-377.7798462,386.4978333-377.7798462c209.7767639,0,374.1473083,170.1825562,374.1473083,379.7776794 C881.0255737,701.9748535,714.5241699,869.9389038,508.1719971,871.0396729z M511.2596436,302.1904602 c-102.0732117-5.2671204-181.624939,65.3849792-199.2425537,176.176178 c-14.5299988,91.7205811,11.2607422,203.4199219,33.2373657,209.2319336 c10.5342407,2.5427246,37.0514832-18.8890381,53.5793457-35.4168701 c27.3296509,18.8800049,59.1547852,30.2192993,92.2654419,32.8740845 c105.7646484,5.0874634,196.1364746-75.4315186,203.2382812-181.0800476 c4.1342163-105.8720703-77.2985229-195.5450134-183.0779419-201.6036377L511.2596436,302.1904602z"/></svg><span>MAX</span></a>
           <a class="menu__pill" href="https://instagram.com/ideaplus.2656221" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a>
         </div>
         <p class="menu__city">Ставрополь · дизайнерская мебель на заказ</p>
@@ -123,10 +128,11 @@
     <p class="hero__eyebrow reveal">Мастерская дизайнерской мебели&nbsp;·&nbsp;Ставрополь</p>
 
     <!-- Hero — комод с рейчатыми фасадами, собранный из развёртки (настоящий CSS 3D),
-         и монограмма «И⁺» из гнутой фанеры на стене над ним.
+         и арочное зеркало с подсветкой над ним, в зеркале — монограмма «И⁺».
          Сценарий: чертёж развёртки → панели становятся деревом → развёртка складывается
          в корпус → вырастают ножки, фасады покрываются рейками → дверца открывает нишу
-         с подсветкой → на стене слоями шпона рисуется «И⁺» и загорается. -->
+         с подсветкой → над комодом прорисовывается арочное зеркало, включается его
+         подсветка → внутри зеркала слоями шпона рисуется «И⁺» и загорается. -->
     <div class="brand-mark brand-mark--hero" id="brand-hero">
       <div class="piece-stage">
         <svg class="piece-plan" viewBox="0 0 390 320" aria-hidden="true">
@@ -162,22 +168,47 @@
                 <span class="leg leg--1"></span><span class="leg leg--2"></span><span class="leg leg--3"></span><span class="leg leg--4"></span>
                 <div class="wall">
                   <span class="wall__glow"></span>
-                  <svg class="wall__mono" viewBox="8 8 92 84" aria-hidden="true">
+                  <!-- арочное зеркало с LED-подсветкой, внутри — монограмма «И⁺» -->
+                  <svg class="mirror" viewBox="0 0 120 140" aria-hidden="true">
                     <defs>
                       <linearGradient id="ply-brass" gradientUnits="userSpaceOnUse" x1="14" y1="16" x2="86" y2="84">
                         <stop offset="0" stop-color="#F6E4C1"/><stop offset=".38" stop-color="#D3AF7C"/>
                         <stop offset=".62" stop-color="#8E6E42"/><stop offset="1" stop-color="#E3C592"/>
                       </linearGradient>
+                      <linearGradient id="mirror-glass" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#3B352F"/><stop offset=".55" stop-color="#221E1A"/><stop offset="1" stop-color="#15120F"/>
+                      </linearGradient>
+                      <linearGradient id="mirror-sheen" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="-60" y2="30">
+                        <stop offset="0" stop-color="#FFF6E4" stop-opacity="0"/>
+                        <stop offset=".5" stop-color="#FFF6E4" stop-opacity=".35"/>
+                        <stop offset="1" stop-color="#FFF6E4" stop-opacity="0"/>
+                      </linearGradient>
+                      <clipPath id="mirror-clip"><path d="M8 136V58A52 52 0 0 1 112 58V136Z"/></clipPath>
+                      <filter id="mirror-blur" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter>
+                      <filter id="mirror-blur-s" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.2"/></filter>
                     </defs>
-                      <path class="wall__draw ply ply--1" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                      <path class="wall__draw ply ply--2" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                      <path class="wall__draw ply ply--3" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                      <path class="wall__draw ply ply--4" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                      <path class="wall__draw ply ply--5" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="wall__led-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="wall__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-                    <path class="wall__draw wall__plus-glow" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
-                    <path class="wall__draw wall__plus" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
+                    <path class="mirror__backlight" d="M8 136V58A52 52 0 0 1 112 58V136Z"/>
+                    <g class="mirror__glass">
+                      <path d="M8 136V58A52 52 0 0 1 112 58V136Z" fill="url(#mirror-glass)"/>
+                      <g clip-path="url(#mirror-clip)">
+                        <path class="mirror__streak" d="M30 150L95 20M44 150L109 20"/>
+                        <rect id="mirror-sheen-rect" x="0" y="0" width="120" height="140" fill="url(#mirror-sheen)"/>
+                      </g>
+                    </g>
+                    <path class="mirror__ledline-glow" d="M15 129V58A45 45 0 0 1 105 58V129Z"/>
+                    <path class="mirror__ledline" d="M15 129V58A45 45 0 0 1 105 58V129Z"/>
+                    <g class="mirror__mono" transform="translate(60 87) scale(.68) translate(-54 -48)">
+                        <path class="wall__draw ply ply--1" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                        <path class="wall__draw ply ply--2" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                        <path class="wall__draw ply ply--3" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                        <path class="wall__draw ply ply--4" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                        <path class="wall__draw ply ply--5" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                      <path class="wall__led-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                      <path class="wall__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                      <path class="wall__draw wall__plus-glow" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
+                      <path class="wall__draw wall__plus" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
+                    </g>
+                    <path class="wall__draw mirror__frame" pathLength="100" d="M8 136V58A52 52 0 0 1 112 58V136Z"/>
                   </svg>
                 </div>
                 <div class="pf pf--front"><span class="pf__skin"></span><span class="pf__shade"></span>
@@ -368,8 +399,8 @@
       <a class="pill" href="https://wa.me/79614506212" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.05 4.91A9.82 9.82 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02zM12.05 20.15h-.01a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-3.11.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24a8.2 8.2 0 0 1 8.23 8.25c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg><span>WhatsApp</span></a>
       <a class="pill" href="https://t.me/+79614506212" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.94 4.6 18.6 20.3c-.25 1.1-.9 1.38-1.83.86l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.16 9.4-8.49c.41-.36-.09-.57-.63-.21L5.16 13.1l-5-1.57c-1.09-.34-1.11-1.09.23-1.61l19.55-7.54c.91-.34 1.7.21 1.4 1.62z"/></svg><span>Telegram</span></a>
       <!-- MAX: ссылка на чат по номеру не поддерживается; замените href на ссылку профиля из настроек MAX -->
-      <a class="pill" href="https://max.ru/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/><path d="M8 15V9l4 4 4-4v6"/></svg><span>MAX</span></a>
-      <a class="pill" href="https://instagram.com/ideaplus.2656221" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>@ideaplus.2656221</span></a>
+      <a class="pill" href="https://max.ru/" target="_blank" rel="noopener"><svg viewBox="98 98 806 806" width="18" height="18" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M508.1719971,871.0396729 c-74.6478577,0-109.3381958-10.8974609-169.6376648-54.4874268 c-38.1412354,49.0386963-158.9217987,87.3615723-164.1889191,21.7949829c0-49.2203369-10.8975067-90.812439-23.2480011-136.218689 c-14.7115936-55.9404907-31.4210892-118.237854-31.4210892-208.5054321 c0-215.5888062,176.9026489-377.7798462,386.4978333-377.7798462c209.7767639,0,374.1473083,170.1825562,374.1473083,379.7776794 C881.0255737,701.9748535,714.5241699,869.9389038,508.1719971,871.0396729z M511.2596436,302.1904602 c-102.0732117-5.2671204-181.624939,65.3849792-199.2425537,176.176178 c-14.5299988,91.7205811,11.2607422,203.4199219,33.2373657,209.2319336 c10.5342407,2.5427246,37.0514832-18.8890381,53.5793457-35.4168701 c27.3296509,18.8800049,59.1547852,30.2192993,92.2654419,32.8740845 c105.7646484,5.0874634,196.1364746-75.4315186,203.2382812-181.0800476 c4.1342163-105.8720703-77.2985229-195.5450134-183.0779419-201.6036377L511.2596436,302.1904602z"/></svg><span>MAX</span></a>
+      <a class="pill" href="https://instagram.com/ideaplus.2656221" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a>
     </div>
   </section>
 </main>

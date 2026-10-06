@@ -1,6 +1,6 @@
 /* =========================================================
    ИДЕЯ ПЛЮС — interactions
-   brand intro · portfolio with LED-scan · manifesto · timeline ·
+   brand intro · portfolio · manifesto · timeline ·
    counters · filters · swipe lightbox · reveals
    ========================================================= */
 (() => {
@@ -139,7 +139,9 @@
   /* ---------- brand mark: чертёж → изделие → подсветка ---------- */
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const heroMark = $('#brand-hero');
-  const heroIntro = !!heroMark && !reduceMotion;
+  // если предохранитель в <head> уже снял html.js (скрипт пришёл слишком поздно) — интро не играем
+  const heroIntro = !!heroMark && !reduceMotion && document.documentElement.classList.contains('js');
+  if (heroIntro) window.__introStarted = true;
 
   // крошечный таймлайн на rAF: трек = { at, dur, ease, fn(p) }, время в мс
   const ease = {
@@ -187,6 +189,8 @@
     const piece = q('.piece');
     const plies = $$('.ply', root);
     const plus = $$('.wall__plus, .wall__plus-glow', root);
+    const frame = q('.mirror__frame');
+    const sheenRect = q('#mirror-sheen-rect');
     const word = q('.brand-mark__word');
     const face = (n) => q(`.pf--${n}`);
     const shade = (n) => q(`.pf--${n} > .pf__shade`);
@@ -196,7 +200,7 @@
       front: ['X', 1], back: ['X', -1], lid: ['X', -1], left: ['Y', 1], right: ['Y', -1],
     };
     const SHADE = { front: 0.06, left: 0.42, right: 0.55, back: 0.55, lid: 0.1, base: 0.6 };
-    const touched = [plan, ...planLines, folds, labels, cutter, piece, word, ...plies, ...plus,
+    const touched = [plan, ...planLines, folds, labels, cutter, piece, word, ...plies, ...plus, frame, sheenRect,
       ...Object.keys(SHADE).flatMap((n) => [face(n), shade(n)])];
 
     // 101: при p = 0 штрих полностью скрыт, без «торца» нулевой длины
@@ -260,32 +264,46 @@
       } },
 
       // 5. комод: вырастают ножки (сцена опускается, освобождая место стене), фасады — в рейку
-      { at: 2650, dur: 500, fn: (p) => { vary('--leg', p); pose.tz = lerp(0.42, 0.8, p); setPose(); } },
+      { at: 2650, dur: 500, fn: (p) => { vary('--leg', p); pose.tz = lerp(0.42, 1.1, p); setPose(); } },
       { at: 2750, dur: 500, fn: (p) => vary('--fr', p) },
 
       // 6. дверца распахивается, в нише включается LED-лента
       { at: 3000, dur: 700, ease: backOut, fn: (p) => vary('--door', (-105 * p).toFixed(2)) },
       { at: 3150, dur: 560, ease: ease.linear, fn: (p) => { const o = flicker(p).toFixed(3); vary('--lit', o); vary('--hl', o); } },
 
-      // 7. на стене слоями шпона рисуется «И⁺», загорается сердцевина и плюс
-      // слои идут почти вместе — растёт сразу полосатая фанерная лента, а не одинокая латунная черта
-      ...plies.map((el, i) => ({ at: 3400 + i * 35, dur: 750, ease: ease.inOut, fn: (p) => draw(el, p) })),
-      ...plus.map((el) => ({ at: 4050, dur: 260, fn: (p) => draw(el, p) })),
-      { at: 4050, dur: 520, ease: ease.linear, fn: (p) => vary('--wlit', flicker(p).toFixed(3)) },
+      // 7. над комодом прорисовывается арочное зеркало, включается его подсветка, по стеклу — блик
+      { at: 3200, dur: 650, ease: ease.inOut, fn: (p) => draw(frame, p) },
+      { at: 3400, dur: 400, fn: (p) => vary('--glass', p) },
+      { at: 3700, dur: 520, ease: ease.linear, fn: (p) => vary('--mlit', flicker(p).toFixed(3)) },
+      { at: 4150, dur: 750, ease: ease.inOut, fn: (p) => {
+        const x = -90 + 240 * p;
+        const g = q('#mirror-sheen');
+        g.setAttribute('x1', x); g.setAttribute('x2', x + 30);
+      } },
 
-      // 8. слово раскрывается от центра
-      { at: 4150, dur: 800, fn: (p) => {
+      // 8. внутри зеркала слоями шпона рисуется «И⁺» (слои почти вместе — растёт полосатая лента)
+      ...plies.map((el, i) => ({ at: 3800 + i * 35, dur: 700, ease: ease.inOut, fn: (p) => draw(el, p) })),
+      ...plus.map((el) => ({ at: 4400, dur: 260, fn: (p) => draw(el, p) })),
+      { at: 4400, dur: 520, ease: ease.linear, fn: (p) => vary('--wlit', flicker(p).toFixed(3)) },
+
+      // 9. слово раскрывается от центра
+      { at: 4450, dur: 800, fn: (p) => {
         const c = 50 * (1 - p);
         word.style.opacity = p;
         word.style.clipPath = `inset(-20% ${c}% -20% ${c}%)`;
         word.style.transform = `scaleX(${1.1 - 0.1 * p})`;
       } },
-      { at: 4200, dur: 0, fn: onReveal },
+      { at: 4500, dur: 0, fn: onReveal },
     ];
+
+    // общий темп интро: тайминги выше записаны «в полной скорости», здесь сжимаем их целиком
+    const SPEED = 0.74;
+    tracks.forEach((k) => { k.at *= SPEED; k.dur *= SPEED; });
 
     playTimeline(tracks, () => {
       root.classList.add('is-done');
       touched.forEach((el) => el.removeAttribute('style'));
+      const g = q('#mirror-sheen'); g.setAttribute('x1', -90); g.setAttribute('x2', -60);
       setTimeout(() => piece.classList.remove('is-sealed'), 1400);
     });
 
@@ -341,7 +359,7 @@
 
   const cardsById = new Map();
 
-  // своя ленивая загрузка: нативная не грузит фото, пока оно скрыто clip-path под «шторкой»
+  // ленивая загрузка с запасом в один экран — фото начинает грузиться заранее
   const loadImg = (img) => { if (!img.src && img.dataset.src) img.src = img.dataset.src; };
   const preloadIO = 'IntersectionObserver' in window
     ? new IntersectionObserver((entries) => {
@@ -353,26 +371,22 @@
     }, { rootMargin: '100% 0px' })
     : null;
 
-  // «LED-скан» запускается, когда кадр заехал в экран
-  const scanIO = 'IntersectionObserver' in window && !reduceMotion
+  // фото проявляется, когда кадр в экране и снимок уже загружен (до этого — плашка с переливом)
+  const showIO = 'IntersectionObserver' in window && !reduceMotion
     ? new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
         const card = e.target;
-        scanIO.unobserve(card);
-        // сканер стартует только когда фото уже загружено — иначе линия пройдёт по пустоте
+        showIO.unobserve(card);
         const img = $('.work__img', card);
-        const start = () => {
-          card.classList.add('is-scanning');
-          setTimeout(() => card.classList.add('is-scanned'), 1500);
-        };
-        if (img.complete && img.naturalWidth) start();
+        const show = () => card.classList.add('is-shown');
+        if (img.complete && img.naturalWidth) show();
         else {
-          img.addEventListener('load', start, { once: true });
-          img.addEventListener('error', () => card.classList.add('is-scanned'), { once: true });
+          img.addEventListener('load', show, { once: true });
+          img.addEventListener('error', show, { once: true });
         }
       });
-    }, { threshold: 0.35 })
+    }, { threshold: 0.3 })
     : null;
 
   categories.forEach((cat) => {
@@ -392,9 +406,7 @@
     card.dataset.category = w.category;
     card.innerHTML = `
       <button class="work__frame" type="button" aria-label="Открыть фото: ${escapeHtml(w.title)}">
-        <span class="work__plan" aria-hidden="true"></span>
         <img class="work__img" data-src="${w.src}" alt="${escapeHtml(w.alt)}" decoding="async">
-        <span class="work__scan" aria-hidden="true"></span>
         ${w.materials ? `<span class="work__dim">${escapeHtml(w.materials)}</span>` : ''}
       </button>
       <div class="work__meta reveal">
@@ -415,7 +427,7 @@
     grid.appendChild(card);
     observeReveal($('.work__meta', card));
     if (preloadIO) preloadIO.observe(card); else loadImg($('.work__img', card));
-    if (scanIO) scanIO.observe(card); else card.classList.add('is-scanned');
+    if (showIO) showIO.observe(card); else card.classList.add('is-shown');
     cardsById.set(w.id, card);
   });
   layoutWorks();
