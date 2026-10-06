@@ -30,14 +30,10 @@
 <!-- ====== NAV ====== -->
 <header class="nav" id="nav">
   <a class="nav__brand" href="#top" aria-label="Идея Плюс — на главную">
-    <svg class="mini-mark" viewBox="12 16 74 72" aria-hidden="true">
-      <path class="mini-mark__side" d="M70 34L84 20V70L70 84Z"/>
-      <path class="mini-mark__top" d="M20 34L34 20H84L70 34Z"/>
-      <path class="mini-mark__front" d="M20 34H70V84H20Z"/>
-      <path class="mini-mark__cavity" d="M24 38H66V56H24Z"/>
-      <path class="mini-mark__light" d="M15 47L24 38H66L57 47Z"/>
-      <path class="mini-mark__side" d="M57 47L66 38V56L57 65Z"/>
-      <path class="mini-mark__drawer" d="M15 47H57V65H15Z"/>
+    <svg class="mini-mark" viewBox="8 12 84 76" aria-hidden="true">
+      <path class="mini-mark__l1" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+      <path class="mini-mark__l2" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+      <path class="mini-mark__l3" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
     </svg>
     <span class="nav__word">ИДЕЯ ПЛЮС</span>
   </a>
@@ -74,100 +70,79 @@
   <section class="hero" id="hero">
     <p class="hero__eyebrow reveal">Дизайнерская мебель на заказ</p>
 
-    <!-- Знак «Идея внутри»: тумба в кабинетной проекции (фасад в натуральную величину,
-         глубина под 45° ×½). Ящик выдвигается — и внутри включается LED-лента.
-         Слои идут в порядке анимации: разметка → карандаш → дерево и латунь → ящик → свет. -->
+    <!-- Знак — монограмма «И⁺» из гнутой фанеры: одна лента, на торце видны слои шпона
+         (латунь / тёмное дерево), в сердцевину встроена LED-лента.
+         Слои идут в порядке анимации: чертёж гибов → карандаш → шпон в прессе → блик → свет → «⁺». -->
     <div class="brand-mark brand-mark--hero" id="brand-hero">
-      <svg class="brand-mark__svg" viewBox="8 12 83 87" aria-hidden="true">
+      <svg class="brand-mark__svg" viewBox="8 8 92 84" aria-hidden="true">
         <defs>
-          <linearGradient id="bm-brass" gradientUnits="userSpaceOnUse" x1="15" y1="20" x2="84" y2="90">
+          <linearGradient id="bm-brass" gradientUnits="userSpaceOnUse" x1="14" y1="16" x2="86" y2="84">
             <stop offset="0" stop-color="#F6E4C1"/>
             <stop offset=".38" stop-color="#D3AF7C"/>
             <stop offset=".62" stop-color="#8E6E42"/>
             <stop offset="1" stop-color="#E3C592"/>
           </linearGradient>
-          <linearGradient id="bm-wood" gradientUnits="userSpaceOnUse" x1="20" y1="34" x2="70" y2="84">
-            <stop offset="0" stop-color="#3A3127"/>
-            <stop offset="1" stop-color="#211C17"/>
-          </linearGradient>
-          <linearGradient id="bm-inside" gradientUnits="userSpaceOnUse" x1="0" y1="38" x2="0" y2="47">
-            <stop offset="0" stop-color="#FFD9A3" stop-opacity=".85"/>
-            <stop offset="1" stop-color="#6B4F2C" stop-opacity=".9"/>
-          </linearGradient>
           <linearGradient id="bm-sheen" gradientUnits="userSpaceOnUse" x1="-80" y1="0" x2="-50" y2="14">
             <stop offset="0" stop-color="#FFF6E4" stop-opacity="0"/>
-            <stop offset=".5" stop-color="#FFF6E4" stop-opacity="1"/>
+            <stop offset=".5" stop-color="#FFF6E4" stop-opacity=".85"/>
             <stop offset="1" stop-color="#FFF6E4" stop-opacity="0"/>
           </linearGradient>
-          <radialGradient id="bm-glow-fill">
-            <stop offset="0" stop-color="#FFD9A3" stop-opacity=".62"/>
-            <stop offset=".5" stop-color="#FFD9A3" stop-opacity=".18"/>
+          <radialGradient id="bm-halo" gradientUnits="userSpaceOnUse" cx="50" cy="50" r="54">
+            <stop offset="0" stop-color="#FFD9A3" stop-opacity=".16"/>
             <stop offset="1" stop-color="#FFD9A3" stop-opacity="0"/>
           </radialGradient>
-          <radialGradient id="bm-halo" gradientUnits="userSpaceOnUse" cx="52" cy="52" r="54">
-            <stop offset="0" stop-color="#FFD9A3" stop-opacity=".14"/>
-            <stop offset="1" stop-color="#FFD9A3" stop-opacity="0"/>
-          </radialGradient>
-          <filter id="bm-blur" x="-50%" y="-300%" width="200%" height="700%">
+          <filter id="bm-blur" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="1.2"/>
           </filter>
+          <!-- карандашный контур ленты: широкий белый штрих минус чуть более узкий чёрный -->
+          <mask id="bm-outline" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140">
+            <path class="bm-draw bm-mo bm-mo--out" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+            <path class="bm-draw bm-mo bm-mo--in" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+          </mask>
         </defs>
 
         <g class="bm-guides">
-          <path class="bm-draw" pathLength="100" d="M-22 34H122"/>
-          <path class="bm-draw" pathLength="100" d="M-22 84H122"/>
-          <path class="bm-draw" pathLength="100" d="M20 -4V112"/>
-          <path class="bm-draw" pathLength="100" d="M70 -4V112"/>
-          <path class="bm-draw" pathLength="100" d="M8 46L46 8"/>
-          <path class="bm-draw" pathLength="100" d="M60 94L98 56"/>
-          <path class="bm-draw" pathLength="100" d="M60 44L96 8"/>
-          <circle class="bm-draw" pathLength="100" cx="45" cy="47" r="3.2"/>
-          <path class="bm-draw" pathLength="100" d="M80 84A10 10 0 0 0 77.07 76.93"/>
-          <path class="bm-draw" pathLength="100" d="M20 99H70M18 101L22 97M68 101L72 97"/>
-          <path class="bm-draw" pathLength="100" d="M7 34V84M5 36L9 32M5 86L9 82"/>
-          <text class="bm-dim" x="45" y="104.5">500</text>
-          <text class="bm-dim" x="4.6" y="59" transform="rotate(-90 4.6 59)">500</text>
-          <text class="bm-dim" x="87" y="82">45°</text>
+          <path class="bm-draw" pathLength="100" d="M-22 22H122"/>
+          <path class="bm-draw" pathLength="100" d="M-22 78H122"/>
+          <path class="bm-draw" pathLength="100" d="M20 -6V106"/>
+          <path class="bm-draw" pathLength="100" d="M80 -6V106"/>
+          <path class="bm-draw" pathLength="100" d="M2 94.8L98 5.2"/>
+          <circle class="bm-draw" pathLength="100" cx="28" cy="59.59" r="8"/>
+          <circle class="bm-draw" pathLength="100" cx="72" cy="40.41" r="8"/>
+          <path class="bm-draw" pathLength="100" d="M28 59.59L22.4 65.2M72 40.41L77.6 34.8"/>
+          <path class="bm-draw" pathLength="100" d="M20 92H80M18 94L22 90M78 94L82 90"/>
+          <path class="bm-draw" pathLength="100" d="M7 22V78M5 24L9 20M5 80L9 76"/>
+          <text class="bm-dim" x="50" y="97.5">600</text>
+          <text class="bm-dim" x="4.6" y="50" transform="rotate(-90 4.6 50)">560</text>
+          <text class="bm-dim" x="33" y="73">R80</text>
+          <text class="bm-dim" x="67" y="30">R80</text>
         </g>
 
-        <circle class="bm-halo bm-light" cx="52" cy="52" r="54" fill="url(#bm-halo)"/>
+        <circle class="bm-halo bm-light" cx="50" cy="50" r="54" fill="url(#bm-halo)"/>
 
-        <g class="bm-obj">
-          <g class="bm-solid">
-            <path class="bm-legs" d="M26 84L23 91M64 84L67 91M80 74L82 80"/>
-            <path class="bm-face bm-face--side" d="M70 34L84 20V70L70 84Z"/>
-            <path class="bm-face bm-face--top" d="M20 34L34 20H84L70 34Z"/>
-            <path class="bm-face bm-face--front" d="M20 34H70V84H20Z"/>
-            <path class="bm-face bm-face--cavity" d="M24 38H66V56H24Z"/>
-            <path class="bm-face" d="M24 60H66V80H24Z"/>
-            <path class="bm-handle" d="M39 72H51"/>
-
-            <g class="bm-drawer">
-              <path class="bm-face bm-face--cavity bm-inner" d="M15 47L24 38H66L57 47Z"/>
-              <path class="bm-inner bm-inner--lit bm-light" d="M15 47L24 38H66L57 47Z"/>
-              <path class="bm-face bm-face--side bm-dside" d="M57 47L66 38V56L57 65Z"/>
-              <g class="bm-dfront" transform="translate(-9 9)">
-                <path class="bm-face bm-face--front" d="M24 38H66V56H24Z"/>
-                <path class="bm-handle" d="M39 44H51"/>
-              </g>
-            </g>
-          </g>
-          <path class="bm-sheen" d="M70 34L84 20V70L70 84ZM20 34L34 20H84L70 34ZM20 34H70V84H20Z"/>
-
-          <g class="bm-led bm-light">
-            <path class="bm-led__glow" d="M25 38.6H65"/>
-            <path class="bm-led__core" d="M25 38.6H65"/>
-          </g>
-          <ellipse class="bm-glow bm-light" cx="41" cy="36" rx="34" ry="22" fill="url(#bm-glow-fill)"/>
-
-          <g class="bm-pencil">
-            <path class="bm-draw bm-trace" pathLength="100" d="M20 84V34H70V84Z M20 34L34 20H84L70 34 M84 20V70L70 84"/>
-            <path class="bm-draw bm-trace" pathLength="100" d="M24 38H66V56H24Z M24 60H66V80H24Z M39 44H51 M39 72H51"/>
-            <path class="bm-draw bm-pencil-legs" pathLength="100" d="M26 84L23 91M64 84L67 91M80 74L82 80"/>
-          </g>
+        <g class="bm-ply">
+            <path class="bm-draw bm-ply__l1" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+            <path class="bm-draw bm-ply__l2" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+            <path class="bm-draw bm-ply__l3" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+            <path class="bm-draw bm-ply__l4" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+            <path class="bm-draw bm-ply__l5" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
         </g>
-        <circle class="bm-cutter" r="1.7"/>
-        <circle class="bm-cutter" r="1.7"/>
+        <path class="bm-sheen" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+        <g class="bm-led bm-light">
+          <path class="bm-led__glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+          <path class="bm-led__core" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+        </g>
+        <g class="bm-plus">
+          <path class="bm-draw bm-plus__glow" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
+          <path class="bm-draw bm-plus__core" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
+        </g>
+
+        <g class="bm-pencil">
+          <rect x="-20" y="-20" width="140" height="140" fill="#F3ECDF" mask="url(#bm-outline)"/>
+          <path class="bm-draw bm-ends" pathLength="100" d="M14.5 22H25.5M74.5 78H85.5"/>
+        </g>
+        <circle class="bm-cutter" r="1.5"/>
+        <circle class="bm-cutter" r="1.5"/>
       </svg>
       <span class="brand-mark__word">ИДЕЯ ПЛЮС</span>
     </div>
@@ -339,14 +314,10 @@
 </main>
 
 <footer class="footer">
-  <svg class="mini-mark mini-mark--footer" viewBox="12 16 74 72" aria-hidden="true">
-    <path class="mini-mark__side" d="M70 34L84 20V70L70 84Z"/>
-    <path class="mini-mark__top" d="M20 34L34 20H84L70 34Z"/>
-    <path class="mini-mark__front" d="M20 34H70V84H20Z"/>
-    <path class="mini-mark__cavity" d="M24 38H66V56H24Z"/>
-    <path class="mini-mark__light" d="M15 47L24 38H66L57 47Z"/>
-    <path class="mini-mark__side" d="M57 47L66 38V56L57 65Z"/>
-    <path class="mini-mark__drawer" d="M15 47H57V65H15Z"/>
+  <svg class="mini-mark mini-mark--footer" viewBox="8 12 84 76" aria-hidden="true">
+    <path class="mini-mark__l1" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+    <path class="mini-mark__l2" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+    <path class="mini-mark__l3" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
   </svg>
   <span class="footer__word">ИДЕЯ ПЛЮС</span>
   <span class="footer__copy">© <span id="year">2026</span> · Мебель на заказ</span>

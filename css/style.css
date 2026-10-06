@@ -211,45 +211,46 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .nav__links a:hover::after { width: 100%; }
 }
 
-/* ---------- Brand mark: «Идея внутри» ----------
-   Тумба тёмного дерева с латунной кромкой в кабинетной проекции (глубина 45° ×½).
-   Верхний ящик выдвинут, внутри горит LED-лента — свет «идеи» льётся наружу.
+/* ---------- Brand mark: монограмма «И⁺» из гнутой фанеры ----------
+   Одна непрерывная лента, согнутая как фанера в дизайнерских стульях.
+   На торце видны слои шпона (латунь / тёмное дерево), в сердцевине — LED-лента.
    Без JS (и при reduced-motion) виден финальный кадр; с JS — html.js прячет
    слои до старта, а initBrandMark() проигрывает
-   «разметка → карандаш → дерево и латунь → ящик выдвигается → включается свет». */
+   «чертёж гибов → карандаш → шпон ложится в пресс → блик → свет → ⁺». */
 .brand-mark { position: relative; display: flex; flex-direction: column; align-items: center; flex: none; }
 .brand-mark__svg { display: block; overflow: visible; will-change: transform; }
 .brand-mark--hero { gap: clamp(14px, 2.4vw, 22px); margin-bottom: 0.4rem; }
-.brand-mark--hero .brand-mark__svg { width: clamp(108px, 23vw, 150px); height: auto; }
+.brand-mark--hero .brand-mark__svg { width: clamp(112px, 24vw, 156px); height: auto; }
 
 .brand-mark__svg path, .brand-mark__svg circle { fill: none; }
 .bm-draw { stroke-dasharray: 100; stroke-dashoffset: 0; }
 
-/* разметка-чертёж: видна только во время анимации */
+/* чертёж: оси, диагональ, циркульные радиусы гибов — только во время анимации */
 .bm-guides { opacity: 0; stroke: var(--taupe); stroke-width: .4; }
 .bm-dim {
   font-family: var(--sans); font-size: 4.2px; font-weight: 600; letter-spacing: .08em;
   fill: var(--taupe); text-anchor: middle;
 }
-.bm-pencil { opacity: 0; stroke: var(--cream-hi); stroke-width: .8; stroke-linejoin: round; stroke-linecap: round; }
+.bm-pencil { opacity: 0; }
+.bm-mo--out { stroke: #fff; stroke-width: 11.8; }
+.bm-mo--in  { stroke: #000; stroke-width: 10.2; }
+.bm-ends { stroke: var(--cream-hi); stroke-width: .8; }
 
-/* «материал»: тёмное дерево, латунная кромка */
-.bm-face { stroke: url(#bm-brass); stroke-width: 1.2; stroke-linejoin: round; }
-.brand-mark__svg .bm-face--side   { fill: #15110E; }
-.brand-mark__svg .bm-face--top    { fill: #5A4A37; }
-.brand-mark__svg .bm-face--front  { fill: url(#bm-wood); }
-.brand-mark__svg .bm-face--cavity { fill: #0E0B09; }
-.brand-mark__svg .bm-inner--lit   { fill: url(#bm-inside); }
-.bm-legs, .bm-handle { stroke: url(#bm-brass); stroke-linecap: round; }
-.bm-legs { stroke-width: 1.2; }
-.bm-handle { stroke-width: 1.6; }
-.bm-sheen { stroke: url(#bm-sheen); stroke-width: 1.5; stroke-linejoin: round; }
+/* слои шпона: широкие штрихи одной траектории, каждый следующий уже */
+.bm-ply path { stroke-linecap: butt; }
+.bm-ply__l1 { stroke: url(#bm-brass); stroke-width: 11; }
+.bm-ply__l2 { stroke: #2A231C; stroke-width: 8.6; }
+.bm-ply__l3 { stroke: url(#bm-brass); stroke-width: 6.2; }
+.bm-ply__l4 { stroke: #2A231C; stroke-width: 3.8; }
+.bm-ply__l5 { stroke: var(--brass-dim); stroke-width: 1.2; }
+.bm-sheen { stroke: url(#bm-sheen); stroke-width: 11; }
 
-/* LED-лента в ящике и свет, который из него выходит */
-.bm-led { stroke: var(--led); stroke-linecap: round; }
-.bm-led__glow { stroke-width: 2.4; filter: url(#bm-blur); }
-.bm-led__core { stroke: #FFF1DA; stroke-width: .8; }
-.bm-glow { mix-blend-mode: screen; }
+/* LED в сердцевине и «⁺» */
+.bm-led__glow { stroke: var(--led); stroke-width: 3; opacity: .5; filter: url(#bm-blur); }
+.bm-led__core { stroke: #FFF1DA; stroke-width: 1.1; }
+.bm-plus { stroke-linecap: round; }
+.bm-plus__glow { stroke: var(--led); stroke-width: 3.6; opacity: .6; filter: url(#bm-blur); }
+.bm-plus__core { stroke: #FFF1DA; stroke-width: 1.6; }
 .brand-mark__svg .bm-cutter { fill: var(--led); opacity: 0; filter: drop-shadow(0 0 2.5px var(--led)); }
 
 .brand-mark__word {
@@ -259,7 +260,8 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 }
 
 /* после интро свет мягко «дышит» */
-.brand-mark--hero.is-done .bm-light { animation: ledBreath 4.5s ease-in-out infinite; }
+.brand-mark--hero.is-done .bm-light,
+.brand-mark--hero.is-done .bm-plus { animation: ledBreath 4.5s ease-in-out infinite; }
 @keyframes ledBreath { 50% { opacity: .72; } }
 
 /* стартовый кадр интро (снимается классом .is-done) */
@@ -268,23 +270,20 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .js .brand-mark--hero:not(.is-done) .bm-draw { stroke-dashoffset: 100; }
   .js .brand-mark--hero:not(.is-done) .bm-pencil { opacity: 1; }
   .js .brand-mark--hero:not(.is-done) .bm-dim,
-  .js .brand-mark--hero:not(.is-done) .bm-solid,
   .js .brand-mark--hero:not(.is-done) .bm-light,
   .js .brand-mark--hero:not(.is-done) .brand-mark__word { opacity: 0; }
 }
 
-/* ---- мини-знак: шапка и футер (сплошная латунь — читается от 16px) ---- */
+/* ---- мини-знак: шапка и футер (три слоя вместо пяти — читается от 16px) ---- */
 .mini-mark { width: 26px; height: auto; flex: none; overflow: visible; }
-.mini-mark__side   { fill: var(--brass-dim); }
-.mini-mark__top    { fill: #F3E2BE; }
-.mini-mark__front  { fill: var(--brass); }
-.mini-mark__cavity { fill: var(--ink); }
-.mini-mark__light  { fill: var(--led); filter: drop-shadow(0 0 3px rgba(255,205,140,.8)); }
-.mini-mark__drawer { fill: var(--brass); stroke: var(--ink); stroke-width: 2.5; }
+.mini-mark path { fill: none; stroke-linecap: butt; }
+.mini-mark__l1 { stroke: var(--brass); stroke-width: 16; }
+.mini-mark__l2 { stroke: #2A231C; stroke-width: 9; }
+.mini-mark__l3 { stroke: var(--led); stroke-width: 4; }
 @media (hover: hover) and (pointer: fine) {
-  .nav__brand:hover .mini-mark__light { animation: ledFlicker .55s linear; }
+  .nav__brand:hover .mini-mark__l3 { animation: ledFlicker .55s linear; }
 }
-.nav__brand:focus-visible .mini-mark__light { animation: ledFlicker .55s linear; }
+.nav__brand:focus-visible .mini-mark__l3 { animation: ledFlicker .55s linear; }
 @keyframes ledFlicker {
   0% { opacity: 1; } 15% { opacity: .15; } 30% { opacity: .9; }
   45% { opacity: .25; } 65%, 100% { opacity: 1; }
@@ -674,7 +673,7 @@ body.menu-open .hero .led-strip--hero { opacity: 0; transition: opacity .3s var(
     transition-duration: .001ms !important;
   }
   .reveal, .led-strip { opacity: 1 !important; transform: none; }
-  .brand-mark--hero .bm-light { animation: none; }
+  .brand-mark--hero .bm-light, .brand-mark--hero .bm-plus { animation: none; }
   .hero__scroll-arrow, .fab__pulse, .led-strip.reveal.is-in { animation: none; opacity: .9; }
   .lightbox__track.is-animating { transition: none; }
 }
