@@ -178,102 +178,81 @@
     const guideLines = $$('.bm-guides .bm-draw', root);
     const dims = $$('.bm-dim', root);
     const pencil = q('.bm-pencil');
-    const beams = $$('.bm-beam', root);
-    const notch = q('.bm-notch');
-    const slide = q('.bm-slide');
-    const obj = q('.bm-obj');
+    const traces = $$('.bm-trace', root);
+    const legs = q('.bm-pencil-legs');
     const solid = q('.bm-solid');
+    const inners = $$('.bm-inner', root);
+    const dside = q('.bm-dside');
+    const dfront = q('.bm-dfront');
     const sheen = q('#bm-sheen');
-    const led = q('.bm-led');
-    const halo = q('.bm-halo');
-    const flash = q('.bm-flash');
-    const chips = $$('.bm-chips circle', root);
+    const lights = $$('.bm-light', root);
     const cutters = $$('.bm-cutter', root);
     const word = q('.brand-mark__word');
-    const touched = [guides, ...guideLines, ...dims, pencil, ...beams, notch, slide, obj,
-      solid, led, halo, flash, ...chips, ...cutters, word];
+    const touched = [guides, ...guideLines, ...dims, pencil, ...traces, legs, solid,
+      dfront, ...lights, ...cutters, word];
 
     const draw = (el, p) => { el.style.strokeDashoffset = 100 * (1 - p); };
-    const beamLen = beams.map((b) => b.getTotalLength());
-    const SLIDE = 14; // вынос второго бруска «на зрителя» по оси глубины
-    let slideOffset = SLIDE;
-
-    // «резец» идёт по кончику рисуемой линии (второй брусок ещё вынесен вперёд)
+    const traceLen = traces.map((t) => t.getTotalLength());
     const cut = (i, p) => {
-      const pt = beams[i].getPointAtLength(beamLen[i] * p);
-      const off = i === 1 ? slideOffset : 0;
-      cutters[i].setAttribute('cx', pt.x - off);
-      cutters[i].setAttribute('cy', pt.y + off);
+      const pt = traces[i].getPointAtLength(traceLen[i] * p);
+      cutters[i].setAttribute('cx', pt.x);
+      cutters[i].setAttribute('cy', pt.y);
       cutters[i].style.opacity = p < 1 ? 1 : 0;
     };
 
-    // стружка разлетается от стыков паза
-    const chipDir = chips.map((c) => {
-      const x = +c.getAttribute('cx') - 50, y = +c.getAttribute('cy') - 50;
-      const len = Math.hypot(x, y) || 1;
-      return [x / len, y / len, 7 + Math.random() * 7];
-    });
+    // ящик: o — насколько он выдвинут «на зрителя» по оси глубины (финал — 9)
+    const OPEN = 9;
+    const setDrawer = (o) => {
+      const inner = `M${24 - o} ${38 + o}L24 38H66L${66 - o} ${38 + o}Z`;
+      inners.forEach((el) => el.setAttribute('d', inner));
+      dside.setAttribute('d', `M${66 - o} ${38 + o}L66 38V56L${66 - o} ${56 + o}Z`);
+      dfront.style.transform = `translate(${-o}px, ${o}px)`;
+    };
+    setDrawer(0);
+    const backOut = (t) => 1 + 2.4 * Math.pow(t - 1, 3) + 1.4 * Math.pow(t - 1, 2);
 
     const tracks = [
-      // 1. разметка: оси, лучи глубины 45° и размеры
+      // 1. разметка: оси, лучи глубины 45°, размеры
       ...guideLines.map((el, i) => ({ at: i * 45, dur: 600, ease: ease.inOut, fn: (p) => draw(el, p) })),
       { at: 480, dur: 360, fn: (p) => dims.forEach((d) => { d.style.opacity = p; }) },
 
-      // 2. карандаш: горизонтальный брусок с пазом, вертикальный — вынесен вперёд
-      { at: 350, dur: 900, ease: ease.inOut, fn: (p) => { draw(beams[0], p); cut(0, p); } },
-      { at: 650, dur: 900, ease: ease.inOut, fn: (p) => { draw(beams[1], p); cut(1, p); } },
-      { at: 1050, dur: 400, fn: (p) => draw(notch, p) },
+      // 2. карандаш: корпус, затем фасады с ручками и ножки
+      { at: 350, dur: 950, ease: ease.inOut, fn: (p) => { draw(traces[0], p); cut(0, p); } },
+      { at: 700, dur: 850, ease: ease.inOut, fn: (p) => { draw(traces[1], p); cut(1, p); } },
+      { at: 1300, dur: 300, fn: (p) => draw(legs, p) },
 
-      // 3. сборка: брусок уходит в паз по оси глубины, щелчок
-      { at: 1600, dur: 300, ease: (t) => t * t * t, fn: (p) => {
-        slideOffset = SLIDE * (1 - p);
-        slide.style.transform = `translate(${-slideOffset}px, ${slideOffset}px)`;
-      } },
-      { at: 1900, dur: 260, ease: ease.linear, fn: (p) => {
-        const a = 1.1 * (1 - p) * Math.sin(p * Math.PI * 5);
-        obj.style.transform = `translate(${a}px, ${-a * 0.6}px)`;
-      } },
-      { at: 1900, dur: 450, fn: (p) => {
-        flash.setAttribute('r', 2 + 14 * p);
-        flash.style.opacity = 1 - p;
-        chips.forEach((c, i) => {
-          const [dx, dy, dist] = chipDir[i];
-          c.style.transform = `translate(${dx * dist * p}px, ${dy * dist * p + 4 * p * p}px)`;
-          c.style.opacity = 1 - p;
-        });
-      } },
-
-      // 4. материал: дерево с латунной кромкой проявляется, разметка гаснет
-      { at: 1950, dur: 550, fn: (p) => {
+      // 3. материал: дерево с латунной кромкой проявляется, разметка гаснет
+      { at: 1550, dur: 550, fn: (p) => {
         solid.style.opacity = p;
         pencil.style.opacity = 1 - p;
         guides.style.opacity = 0.6 * (1 - p);
       } },
-      { at: 2200, dur: 850, ease: ease.inOut, fn: (p) => {
+      { at: 1850, dur: 850, ease: ease.inOut, fn: (p) => {
         const x = -30 + 160 * p;
         sheen.setAttribute('x1', x - 15); sheen.setAttribute('x2', x + 15);
       } },
 
-      // 5. контурная подсветка включается с дребезгом
-      { at: 2400, dur: 560, ease: ease.linear, fn: (p) => {
+      // 4. ящик выдвигается с лёгким «доводчиком», внутри включается лента
+      { at: 2100, dur: 650, ease: backOut, fn: (p) => setDrawer(OPEN * p) },
+      { at: 2280, dur: 560, ease: ease.linear, fn: (p) => {
         const o = flicker(p);
-        led.style.opacity = o;
-        halo.style.opacity = o;
+        lights.forEach((el) => { el.style.opacity = o; });
       } },
 
-      // 6. слово раскрывается от центра
-      { at: 2550, dur: 800, fn: (p) => {
+      // 5. слово раскрывается от центра
+      { at: 2700, dur: 800, fn: (p) => {
         const c = 50 * (1 - p);
         word.style.opacity = p;
         word.style.clipPath = `inset(-20% ${c}% -20% ${c}%)`;
         word.style.transform = `scaleX(${1.1 - 0.1 * p})`;
       } },
-      { at: 2600, dur: 0, fn: onReveal },
+      { at: 2750, dur: 0, fn: onReveal },
     ];
 
     playTimeline(tracks, () => {
       root.classList.add('is-done');
       touched.forEach((el) => el.removeAttribute('style'));
+      setDrawer(OPEN);
       sheen.setAttribute('x1', -80); sheen.setAttribute('x2', -50);
     });
 

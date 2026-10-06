@@ -211,16 +211,16 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .nav__links a:hover::after { width: 100%; }
 }
 
-/* ---------- Brand mark: крестовое соединение вполдерева ----------
-   Два бруска тёмного дерева с латунной кромкой складываются в «плюс»,
-   сзади — контурная LED-подсветка. Кабинетная проекция: глубина под 45° ×½.
+/* ---------- Brand mark: «Идея внутри» ----------
+   Тумба тёмного дерева с латунной кромкой в кабинетной проекции (глубина 45° ×½).
+   Верхний ящик выдвинут, внутри горит LED-лента — свет «идеи» льётся наружу.
    Без JS (и при reduced-motion) виден финальный кадр; с JS — html.js прячет
    слои до старта, а initBrandMark() проигрывает
-   «разметка → карандаш → брусок входит в паз → дерево и латунь → подсветка». */
+   «разметка → карандаш → дерево и латунь → ящик выдвигается → включается свет». */
 .brand-mark { position: relative; display: flex; flex-direction: column; align-items: center; flex: none; }
 .brand-mark__svg { display: block; overflow: visible; will-change: transform; }
 .brand-mark--hero { gap: clamp(14px, 2.4vw, 22px); margin-bottom: 0.4rem; }
-.brand-mark--hero .brand-mark__svg { width: clamp(104px, 22vw, 144px); height: auto; }
+.brand-mark--hero .brand-mark__svg { width: clamp(108px, 23vw, 150px); height: auto; }
 
 .brand-mark__svg path, .brand-mark__svg circle { fill: none; }
 .bm-draw { stroke-dasharray: 100; stroke-dashoffset: 0; }
@@ -231,24 +231,25 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   font-family: var(--sans); font-size: 4.2px; font-weight: 600; letter-spacing: .08em;
   fill: var(--taupe); text-anchor: middle;
 }
-.bm-pencil { opacity: 0; stroke: var(--cream-hi); stroke-width: .8; stroke-linejoin: round; }
-.bm-notch { stroke: var(--taupe); }
+.bm-pencil { opacity: 0; stroke: var(--cream-hi); stroke-width: .8; stroke-linejoin: round; stroke-linecap: round; }
 
-/* «материал»: тёмное дерево, латунная кромка, волокна по направлению брусков */
-.bm-face { stroke: url(#bm-brass); stroke-width: 1.3; stroke-linejoin: round; }
-.brand-mark__svg .bm-face--side  { fill: #15110E; }
-.brand-mark__svg .bm-face--top   { fill: #5A4A37; }
-.brand-mark__svg .bm-face--front { fill: url(#bm-wood); }
-.bm-grain { stroke: var(--brass); stroke-width: .45; opacity: .35; }
-.bm-seam { stroke: var(--brass); stroke-width: .7; opacity: .7; }
-.bm-sheen { stroke: url(#bm-sheen); stroke-width: 1.6; stroke-linejoin: round; }
+/* «материал»: тёмное дерево, латунная кромка */
+.bm-face { stroke: url(#bm-brass); stroke-width: 1.2; stroke-linejoin: round; }
+.brand-mark__svg .bm-face--side   { fill: #15110E; }
+.brand-mark__svg .bm-face--top    { fill: #5A4A37; }
+.brand-mark__svg .bm-face--front  { fill: url(#bm-wood); }
+.brand-mark__svg .bm-face--cavity { fill: #0E0B09; }
+.brand-mark__svg .bm-inner--lit   { fill: url(#bm-inside); }
+.bm-legs, .bm-handle { stroke: url(#bm-brass); stroke-linecap: round; }
+.bm-legs { stroke-width: 1.2; }
+.bm-handle { stroke-width: 1.6; }
+.bm-sheen { stroke: url(#bm-sheen); stroke-width: 1.5; stroke-linejoin: round; }
 
-/* контурная подсветка сзади + тёплое пятно на «стене» */
-.bm-led { stroke: var(--led); stroke-linejoin: round; }
-.bm-led__glow { stroke-width: 2.4; filter: url(#bm-glow); }
-.bm-led__core { stroke-width: .8; }
-.bm-flash { stroke: var(--led); stroke-width: .7; opacity: 0; }
-.brand-mark__svg .bm-chips circle { fill: var(--brass-hi); opacity: 0; }
+/* LED-лента в ящике и свет, который из него выходит */
+.bm-led { stroke: var(--led); stroke-linecap: round; }
+.bm-led__glow { stroke-width: 2.4; filter: url(#bm-blur); }
+.bm-led__core { stroke: #FFF1DA; stroke-width: .8; }
+.bm-glow { mix-blend-mode: screen; }
 .brand-mark__svg .bm-cutter { fill: var(--led); opacity: 0; filter: drop-shadow(0 0 2.5px var(--led)); }
 
 .brand-mark__word {
@@ -257,42 +258,36 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   letter-spacing: 0.34em; padding-left: 0.34em; color: var(--cream-hi);
 }
 
-/* после интро подсветка мягко «дышит» */
-.brand-mark--hero.is-done .bm-led,
-.brand-mark--hero.is-done .bm-halo { animation: ledBreath 4.5s ease-in-out infinite; }
-@keyframes ledBreath { 50% { opacity: .75; } }
+/* после интро свет мягко «дышит» */
+.brand-mark--hero.is-done .bm-light { animation: ledBreath 4.5s ease-in-out infinite; }
+@keyframes ledBreath { 50% { opacity: .72; } }
 
 /* стартовый кадр интро (снимается классом .is-done) */
 @media (prefers-reduced-motion: no-preference) {
   .js .brand-mark--hero:not(.is-done) .bm-guides { opacity: .6; }
   .js .brand-mark--hero:not(.is-done) .bm-draw { stroke-dashoffset: 100; }
   .js .brand-mark--hero:not(.is-done) .bm-pencil { opacity: 1; }
-  .js .brand-mark--hero:not(.is-done) .bm-slide { transform: translate(-14px, 14px); }
   .js .brand-mark--hero:not(.is-done) .bm-dim,
   .js .brand-mark--hero:not(.is-done) .bm-solid,
-  .js .brand-mark--hero:not(.is-done) .bm-led,
-  .js .brand-mark--hero:not(.is-done) .bm-halo,
+  .js .brand-mark--hero:not(.is-done) .bm-light,
   .js .brand-mark--hero:not(.is-done) .brand-mark__word { opacity: 0; }
 }
 
 /* ---- мини-знак: шапка и футер (сплошная латунь — читается от 16px) ---- */
 .mini-mark { width: 26px; height: auto; flex: none; overflow: visible; }
-.mini-mark__side  { fill: var(--brass-dim); }
-.mini-mark__top   { fill: #F3E2BE; }
-.mini-mark__front { fill: var(--brass); }
-.mini-mark__spark {
-  fill: none; stroke: #FFF6E4; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round;
-  stroke-dasharray: 14 86; stroke-dashoffset: 14; opacity: 0;
-  filter: drop-shadow(0 0 3px rgba(255,205,140,.8));
-}
+.mini-mark__side   { fill: var(--brass-dim); }
+.mini-mark__top    { fill: #F3E2BE; }
+.mini-mark__front  { fill: var(--brass); }
+.mini-mark__cavity { fill: var(--ink); }
+.mini-mark__light  { fill: var(--led); filter: drop-shadow(0 0 3px rgba(255,205,140,.8)); }
+.mini-mark__drawer { fill: var(--brass); stroke: var(--ink); stroke-width: 2.5; }
 @media (hover: hover) and (pointer: fine) {
-  .nav__brand:hover .mini-mark__spark { animation: miniSpark .9s var(--ease); }
+  .nav__brand:hover .mini-mark__light { animation: ledFlicker .55s linear; }
 }
-.nav__brand:focus-visible .mini-mark__spark { animation: miniSpark .9s var(--ease); }
-@keyframes miniSpark {
-  0% { opacity: 1; stroke-dashoffset: 14; }
-  85% { opacity: 1; }
-  100% { opacity: 0; stroke-dashoffset: -86; }
+.nav__brand:focus-visible .mini-mark__light { animation: ledFlicker .55s linear; }
+@keyframes ledFlicker {
+  0% { opacity: 1; } 15% { opacity: .15; } 30% { opacity: .9; }
+  45% { opacity: .25; } 65%, 100% { opacity: 1; }
 }
 .mini-mark--footer { width: 30px; margin-bottom: 6px; }
 
@@ -679,8 +674,7 @@ body.menu-open .hero .led-strip--hero { opacity: 0; transition: opacity .3s var(
     transition-duration: .001ms !important;
   }
   .reveal, .led-strip { opacity: 1 !important; transform: none; }
-  .brand-mark--hero .bm-led, .brand-mark--hero .bm-halo { animation: none; }
-  .mini-mark__spark { display: none; }
+  .brand-mark--hero .bm-light { animation: none; }
   .hero__scroll-arrow, .fab__pulse, .led-strip.reveal.is-in { animation: none; opacity: .9; }
   .lightbox__track.is-animating { transition: none; }
 }
