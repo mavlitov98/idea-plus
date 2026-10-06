@@ -30,10 +30,11 @@
 <!-- ====== NAV ====== -->
 <header class="nav" id="nav">
   <a class="nav__brand" href="#top" aria-label="Идея Плюс — на главную">
-    <svg class="mini-mark" viewBox="8 12 84 76" aria-hidden="true">
-      <path class="mini-mark__l1" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-      <path class="mini-mark__l2" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-      <path class="mini-mark__l3" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+    <svg class="mini-mark" viewBox="14 10 72 80" aria-hidden="true">
+      <path class="mini-mark__top" d="M50 14L81 32L50 50L19 32Z"/>
+      <path class="mini-mark__left" d="M19 32L50 50V86L19 68Z"/>
+      <path class="mini-mark__right" d="M50 50L81 32V68L50 86Z"/>
+      <g transform="matrix(.31 -.18 0 .36 50 50)"><path class="mini-mark__groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mini-mark__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/></g>
     </svg>
     <span class="nav__word">ИДЕЯ ПЛЮС</span>
   </a>
@@ -70,80 +71,58 @@
   <section class="hero" id="hero">
     <p class="hero__eyebrow reveal">Дизайнерская мебель на заказ</p>
 
-    <!-- Знак — монограмма «И⁺» из гнутой фанеры: одна лента, на торце видны слои шпона
-         (латунь / тёмное дерево), в сердцевину встроена LED-лента.
-         Слои идут в порядке анимации: чертёж гибов → карандаш → шпон в прессе → блик → свет → «⁺». -->
+    <!-- Знак — мебельный модуль, собранный из развёртки (настоящий CSS 3D).
+         Сценарий: чертёж развёртки → панели становятся деревом → развёртка ложится
+         «на стол» и складывается в короб → швы вспыхивают → на фасаде загорается «И⁺». -->
     <div class="brand-mark brand-mark--hero" id="brand-hero">
-      <svg class="brand-mark__svg" viewBox="8 8 92 84" aria-hidden="true">
-        <defs>
-          <linearGradient id="bm-brass" gradientUnits="userSpaceOnUse" x1="14" y1="16" x2="86" y2="84">
-            <stop offset="0" stop-color="#F6E4C1"/>
-            <stop offset=".38" stop-color="#D3AF7C"/>
-            <stop offset=".62" stop-color="#8E6E42"/>
-            <stop offset="1" stop-color="#E3C592"/>
-          </linearGradient>
-          <linearGradient id="bm-sheen" gradientUnits="userSpaceOnUse" x1="-80" y1="0" x2="-50" y2="14">
-            <stop offset="0" stop-color="#FFF6E4" stop-opacity="0"/>
-            <stop offset=".5" stop-color="#FFF6E4" stop-opacity=".85"/>
-            <stop offset="1" stop-color="#FFF6E4" stop-opacity="0"/>
-          </linearGradient>
-          <radialGradient id="bm-halo" gradientUnits="userSpaceOnUse" cx="50" cy="50" r="54">
-            <stop offset="0" stop-color="#FFD9A3" stop-opacity=".16"/>
-            <stop offset="1" stop-color="#FFD9A3" stop-opacity="0"/>
-          </radialGradient>
-          <filter id="bm-blur" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="1.2"/>
-          </filter>
-          <!-- карандашный контур ленты: широкий белый штрих минус чуть более узкий чёрный -->
-          <mask id="bm-outline" maskUnits="userSpaceOnUse" x="-20" y="-20" width="140" height="140">
-            <path class="bm-draw bm-mo bm-mo--out" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-            <path class="bm-draw bm-mo bm-mo--in" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-          </mask>
-        </defs>
+      <div class="cube-stage">
+        <svg class="cube-plan" viewBox="0 0 300 400" aria-hidden="true">
+          <g class="cube-plan__guides">
+            <path class="bm-draw" pathLength="100" d="M150 -40V440"/>
+            <path class="bm-draw" pathLength="100" d="M-40 250H340"/>
+            <path class="bm-draw" pathLength="100" d="M100 -14H200M96 -10L104 -18M196 -10L204 -18"/>
+            <path class="bm-draw" pathLength="100" d="M314 200V300M310 204L318 196M310 304L318 296"/>
+          </g>
+          <path class="cube-plan__fold" d="M100 100H200M100 200H200M100 300H200M100 200V300M200 200V300"/>
+          <path class="bm-draw cube-plan__outline" pathLength="100" d="M100 0H200V200H300V300H200V400H100V300H0V200H100Z"/>
+          <g class="cube-plan__labels">
+            <text x="150" y="-20">400</text>
+            <text x="326" y="250" transform="rotate(90 326 250)">400</text>
+            <text x="150" y="53">КРЫШКА</text>
+            <text x="150" y="153">ЗАДНЯЯ</text>
+            <text x="150" y="253">ДНО</text>
+            <text x="150" y="353">ФАСАД</text>
+            <text x="50" y="253">БОК</text>
+            <text x="250" y="253">БОК</text>
+            <text class="cube-plan__title" x="0" y="392">РАЗВЁРТКА · 1:10</text>
+          </g>
+          <circle class="cube-plan__cutter" r="3.5"/>
+        </svg>
 
-        <g class="bm-guides">
-          <path class="bm-draw" pathLength="100" d="M-22 22H122"/>
-          <path class="bm-draw" pathLength="100" d="M-22 78H122"/>
-          <path class="bm-draw" pathLength="100" d="M20 -6V106"/>
-          <path class="bm-draw" pathLength="100" d="M80 -6V106"/>
-          <path class="bm-draw" pathLength="100" d="M2 94.8L98 5.2"/>
-          <circle class="bm-draw" pathLength="100" cx="28" cy="59.59" r="8"/>
-          <circle class="bm-draw" pathLength="100" cx="72" cy="40.41" r="8"/>
-          <path class="bm-draw" pathLength="100" d="M28 59.59L22.4 65.2M72 40.41L77.6 34.8"/>
-          <path class="bm-draw" pathLength="100" d="M20 92H80M18 94L22 90M78 94L82 90"/>
-          <path class="bm-draw" pathLength="100" d="M7 22V78M5 24L9 20M5 80L9 76"/>
-          <text class="bm-dim" x="50" y="97.5">600</text>
-          <text class="bm-dim" x="4.6" y="50" transform="rotate(-90 4.6 50)">560</text>
-          <text class="bm-dim" x="33" y="73">R80</text>
-          <text class="bm-dim" x="67" y="30">R80</text>
-        </g>
+        <span class="cube-halo" aria-hidden="true"></span>
 
-        <circle class="bm-halo bm-light" cx="50" cy="50" r="54" fill="url(#bm-halo)"/>
-
-        <g class="bm-ply">
-            <path class="bm-draw bm-ply__l1" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-            <path class="bm-draw bm-ply__l2" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-            <path class="bm-draw bm-ply__l3" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-            <path class="bm-draw bm-ply__l4" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-            <path class="bm-draw bm-ply__l5" pathLength="100" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-        </g>
-        <path class="bm-sheen" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-        <g class="bm-led bm-light">
-          <path class="bm-led__glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-          <path class="bm-led__core" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-        </g>
-        <g class="bm-plus">
-          <path class="bm-draw bm-plus__glow" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
-          <path class="bm-draw bm-plus__core" pathLength="100" d="M90 13.5V22.5M85.5 18H94.5"/>
-        </g>
-
-        <g class="bm-pencil">
-          <rect x="-20" y="-20" width="140" height="140" fill="#F3ECDF" mask="url(#bm-outline)"/>
-          <path class="bm-draw bm-ends" pathLength="100" d="M14.5 22H25.5M74.5 78H85.5"/>
-        </g>
-        <circle class="bm-cutter" r="1.5"/>
-        <circle class="bm-cutter" r="1.5"/>
-      </svg>
+        <div class="cube-tilt">
+          <div class="cube-sway">
+            <div class="cube">
+              <div class="cube__face cube__face--base"><span class="cube__skin"></span><span class="cube__shade"></span>
+                <div class="cube__face cube__face--front"><span class="cube__skin"><svg class="cube__mono" viewBox="0 0 100 100" aria-hidden="true">
+                    <path class="cube__mono-groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-glow" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+                    <path class="cube__mono-groove" d="M90 10V22M84 16H96"/>
+                    <path class="cube__mono-glow" d="M90 10V22M84 16H96"/>
+                    <path class="cube__mono-led" d="M90 10V22M84 16H96"/>
+                  </svg></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--left"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--right"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                <div class="cube__face cube__face--back"><span class="cube__skin"></span><span class="cube__shade"></span>
+                  <div class="cube__face cube__face--lid"><span class="cube__skin"></span><span class="cube__shade"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <span class="brand-mark__word">ИДЕЯ ПЛЮС</span>
     </div>
 
@@ -314,10 +293,11 @@
 </main>
 
 <footer class="footer">
-  <svg class="mini-mark mini-mark--footer" viewBox="8 12 84 76" aria-hidden="true">
-    <path class="mini-mark__l1" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-    <path class="mini-mark__l2" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
-    <path class="mini-mark__l3" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/>
+  <svg class="mini-mark mini-mark--footer" viewBox="14 10 72 80" aria-hidden="true">
+    <path class="mini-mark__top" d="M50 14L81 32L50 50L19 32Z"/>
+    <path class="mini-mark__left" d="M19 32L50 50V86L19 68Z"/>
+    <path class="mini-mark__right" d="M50 50L81 32V68L50 86Z"/>
+    <g transform="matrix(.31 -.18 0 .36 50 50)"><path class="mini-mark__groove" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/><path class="mini-mark__led" d="M20 22L20 59.59A8 8 0 0 0 33.46 65.44L66.54 34.56A8 8 0 0 1 80 40.41L80 78"/></g>
   </svg>
   <span class="footer__word">ИДЕЯ ПЛЮС</span>
   <span class="footer__copy">© <span id="year">2026</span> · Мебель на заказ</span>

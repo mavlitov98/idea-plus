@@ -211,47 +211,85 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   .nav__links a:hover::after { width: 100%; }
 }
 
-/* ---------- Brand mark: монограмма «И⁺» из гнутой фанеры ----------
-   Одна непрерывная лента, согнутая как фанера в дизайнерских стульях.
-   На торце видны слои шпона (латунь / тёмное дерево), в сердцевине — LED-лента.
-   Без JS (и при reduced-motion) виден финальный кадр; с JS — html.js прячет
-   слои до старта, а initBrandMark() проигрывает
-   «чертёж гибов → карандаш → шпон ложится в пресс → блик → свет → ⁺». */
+/* ---------- Brand mark: модуль из развёртки (CSS 3D) ----------
+   Короб из шести панелей тёмного дерева с латунной кромкой. Грани вложены
+   друг в друга и повёрнуты вокруг «шарниров» (transform-origin на ребре),
+   поэтому развёртка складывается в короб как настоящая.
+   Без JS (и при reduced-motion) виден собранный модуль; с JS — html.js
+   показывает чертёж развёртки, а initBrandMark() проигрывает сборку. */
 .brand-mark { position: relative; display: flex; flex-direction: column; align-items: center; flex: none; }
-.brand-mark__svg { display: block; overflow: visible; will-change: transform; }
-.brand-mark--hero { gap: clamp(14px, 2.4vw, 22px); margin-bottom: 0.4rem; }
-.brand-mark--hero .brand-mark__svg { width: clamp(112px, 24vw, 156px); height: auto; }
+.brand-mark--hero { --s: clamp(58px, 13vw, 82px); gap: clamp(10px, 2vw, 18px); margin-bottom: 0.4rem; }
 
-.brand-mark__svg path, .brand-mark__svg circle { fill: none; }
-.bm-draw { stroke-dasharray: 100; stroke-dashoffset: 0; }
+.cube-stage {
+  position: relative; width: calc(var(--s) * 2.6); height: calc(var(--s) * 2.3);
+  perspective: calc(var(--s) * 11);
+}
+.cube-tilt, .cube-sway, .cube { position: absolute; inset: 0; transform-style: preserve-3d; }
+.cube-tilt { will-change: transform; }
+.cube { transform: rotateX(58deg) rotateZ(-42deg) translateZ(calc(var(--s) * -0.5)); }
 
-/* чертёж: оси, диагональ, циркульные радиусы гибов — только во время анимации */
-.bm-guides { opacity: 0; stroke: var(--taupe); stroke-width: .4; }
-.bm-dim {
-  font-family: var(--sans); font-size: 4.2px; font-weight: 600; letter-spacing: .08em;
+.cube__face { position: absolute; width: var(--s); height: var(--s); transform-style: preserve-3d; }
+.cube__face--base  { left: 50%; top: 50%; margin: calc(var(--s) * -0.5) 0 0 calc(var(--s) * -0.5); }
+.cube__face--front { top: 100%; left: 0; transform-origin: 50% 0;    transform: rotateX(90deg); }
+.cube__face--back  { bottom: 100%; left: 0; transform-origin: 50% 100%; transform: rotateX(-90deg); }
+.cube__face--lid   { bottom: 100%; left: 0; transform-origin: 50% 100%; transform: rotateX(-90deg); }
+.cube__face--left  { right: 100%; top: 0; transform-origin: 100% 50%; transform: rotateY(90deg); }
+.cube__face--right { left: 100%; top: 0; transform-origin: 0 50%;    transform: rotateY(-90deg); }
+
+/* панель: тёмное дерево, волокна, латунная кромка */
+.cube__skin {
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(90deg, rgba(201,168,118,.07) 0 1px, transparent 1px 6px),
+    repeating-linear-gradient(90deg, transparent 0 13px, rgba(201,168,118,.05) 13px 15px),
+    linear-gradient(135deg, #3A3127, #211C17);
+  box-shadow: inset 0 0 0 1.5px var(--brass);
+}
+/* светотень по ориентации грани (значения дублируются в JS для анимации) */
+.cube__shade { position: absolute; inset: 0; background: #000; pointer-events: none; }
+.cube__face--front > .cube__shade { opacity: .08; }
+.cube__face--left  > .cube__shade { opacity: .45; }
+.cube__face--right > .cube__shade,
+.cube__face--back  > .cube__shade { opacity: .55; }
+.cube__face--base  > .cube__shade { opacity: .6; }
+.cube__face--lid   > .cube__shade { background: #FFF4E0; opacity: .16; }
+
+/* фрезерованная LED-монограмма «И⁺» на фасаде */
+.cube__mono { position: absolute; inset: 9%; overflow: visible; transform: rotate(180deg) scaleX(-1); }
+.cube__mono path { fill: none; }
+.cube__mono-groove { stroke: #120E0B; stroke-width: 10; }
+.cube__mono-glow { stroke: var(--led); stroke-width: 7; opacity: .75; filter: blur(2.5px); }
+.cube__mono-led { stroke: #FFF1DA; stroke-width: 3.2; }
+.cube__mono path:nth-child(n+4) { stroke-linecap: round; }
+
+.cube-halo {
+  position: absolute; inset: -45%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255,205,140,.2), rgba(255,205,140,.05) 55%, transparent);
+}
+
+/* швы вспыхивают, когда крышка закрылась */
+.cube.is-sealed .cube__skin { animation: seamFlash 1.3s ease-out; }
+@keyframes seamFlash {
+  0%   { box-shadow: inset 0 0 0 1.5px #FFF1DA, 0 0 16px rgba(255,205,140,.85); }
+  100% { box-shadow: inset 0 0 0 1.5px var(--brass), 0 0 0 rgba(255,205,140,0); }
+}
+
+/* чертёж развёртки: виден только во время интро */
+.cube-plan {
+  position: absolute; left: 50%; top: 50%; width: calc(var(--s) * 3); height: calc(var(--s) * 4);
+  transform: translate(-50%, -50%); overflow: visible; opacity: 0; pointer-events: none;
+}
+.cube-plan path { fill: none; }
+.cube-plan__guides { stroke: var(--taupe); stroke-width: .7; opacity: .7; }
+.cube-plan__outline { stroke: var(--cream-hi); stroke-width: 1.4; stroke-linejoin: round; }
+.cube-plan__fold { stroke: var(--taupe); stroke-width: 1; stroke-dasharray: 7 4 1.5 4; }
+.cube-plan__labels {
+  font-family: var(--sans); font-size: 8.5px; font-weight: 600; letter-spacing: .14em;
   fill: var(--taupe); text-anchor: middle;
 }
-.bm-pencil { opacity: 0; }
-.bm-mo--out { stroke: #fff; stroke-width: 11.8; }
-.bm-mo--in  { stroke: #000; stroke-width: 10.2; }
-.bm-ends { stroke: var(--cream-hi); stroke-width: .8; }
-
-/* слои шпона: широкие штрихи одной траектории, каждый следующий уже */
-.bm-ply path { stroke-linecap: butt; }
-.bm-ply__l1 { stroke: url(#bm-brass); stroke-width: 11; }
-.bm-ply__l2 { stroke: #2A231C; stroke-width: 8.6; }
-.bm-ply__l3 { stroke: url(#bm-brass); stroke-width: 6.2; }
-.bm-ply__l4 { stroke: #2A231C; stroke-width: 3.8; }
-.bm-ply__l5 { stroke: var(--brass-dim); stroke-width: 1.2; }
-.bm-sheen { stroke: url(#bm-sheen); stroke-width: 11; }
-
-/* LED в сердцевине и «⁺» */
-.bm-led__glow { stroke: var(--led); stroke-width: 3; opacity: .5; filter: url(#bm-blur); }
-.bm-led__core { stroke: #FFF1DA; stroke-width: 1.1; }
-.bm-plus { stroke-linecap: round; }
-.bm-plus__glow { stroke: var(--led); stroke-width: 3.6; opacity: .6; filter: url(#bm-blur); }
-.bm-plus__core { stroke: #FFF1DA; stroke-width: 1.6; }
-.brand-mark__svg .bm-cutter { fill: var(--led); opacity: 0; filter: drop-shadow(0 0 2.5px var(--led)); }
+.cube-plan__title { text-anchor: start; fill: var(--brass); }
+.cube-plan__cutter { fill: var(--led); opacity: 0; filter: drop-shadow(0 0 4px var(--led)); }
+.bm-draw { stroke-dasharray: 100; stroke-dashoffset: 0; }
 
 .brand-mark__word {
   font-family: var(--serif); font-weight: 300;
@@ -259,36 +297,48 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   letter-spacing: 0.34em; padding-left: 0.34em; color: var(--cream-hi);
 }
 
-/* после интро свет мягко «дышит» */
-.brand-mark--hero.is-done .bm-light,
-.brand-mark--hero.is-done .bm-plus { animation: ledBreath 4.5s ease-in-out infinite; }
+/* после сборки модуль «живёт»: покачивается, подсветка дышит */
+.brand-mark--hero.is-done .cube-sway { animation: cubeSway 9s ease-in-out infinite; }
+.brand-mark--hero.is-done .cube-halo,
+.brand-mark--hero.is-done .cube__mono { animation: ledBreath 4.5s ease-in-out infinite; }
+@keyframes cubeSway {
+  0%, 100% { transform: rotateY(-5deg) translateY(0); }
+  50%      { transform: rotateY(6deg) translateY(-4px); }
+}
 @keyframes ledBreath { 50% { opacity: .72; } }
 
 /* стартовый кадр интро (снимается классом .is-done) */
 @media (prefers-reduced-motion: no-preference) {
-  .js .brand-mark--hero:not(.is-done) .bm-guides { opacity: .6; }
+  .js .brand-mark--hero:not(.is-done) .cube-plan { opacity: 1; }
   .js .brand-mark--hero:not(.is-done) .bm-draw { stroke-dashoffset: 100; }
-  .js .brand-mark--hero:not(.is-done) .bm-pencil { opacity: 1; }
-  .js .brand-mark--hero:not(.is-done) .bm-dim,
-  .js .brand-mark--hero:not(.is-done) .bm-light,
+  .js .brand-mark--hero:not(.is-done) .cube-plan__fold,
+  .js .brand-mark--hero:not(.is-done) .cube-plan__labels,
+  .js .brand-mark--hero:not(.is-done) .cube,
+  .js .brand-mark--hero:not(.is-done) .cube__mono,
+  .js .brand-mark--hero:not(.is-done) .cube-halo,
   .js .brand-mark--hero:not(.is-done) .brand-mark__word { opacity: 0; }
+  .js .brand-mark--hero:not(.is-done) .cube { transform: translateY(calc(var(--s) * 0.5)); }
+  .js .brand-mark--hero:not(.is-done) .cube__face:not(.cube__face--base) { transform: none; }
+  .js .brand-mark--hero:not(.is-done) .cube__shade { opacity: 0; }
 }
 
-/* ---- мини-знак: шапка и футер (три слоя вместо пяти — читается от 16px) ---- */
-.mini-mark { width: 26px; height: auto; flex: none; overflow: visible; }
-.mini-mark path { fill: none; stroke-linecap: butt; }
-.mini-mark__l1 { stroke: var(--brass); stroke-width: 16; }
-.mini-mark__l2 { stroke: #2A231C; stroke-width: 9; }
-.mini-mark__l3 { stroke: var(--led); stroke-width: 4; }
+/* ---- мини-знак: шапка и футер (модуль в изометрии, монограмма на фасаде) ---- */
+.mini-mark { width: 24px; height: auto; flex: none; overflow: visible; }
+.mini-mark__top   { fill: #F3E2BE; }
+.mini-mark__left  { fill: var(--brass-dim); }
+.mini-mark__right { fill: var(--brass); }
+.mini-mark__groove, .mini-mark__led { fill: none; }
+.mini-mark__groove { stroke: var(--ink); stroke-width: 26; }
+.mini-mark__led { stroke: var(--led); stroke-width: 11; }
 @media (hover: hover) and (pointer: fine) {
-  .nav__brand:hover .mini-mark__l3 { animation: ledFlicker .55s linear; }
+  .nav__brand:hover .mini-mark__led { animation: ledFlicker .55s linear; }
 }
-.nav__brand:focus-visible .mini-mark__l3 { animation: ledFlicker .55s linear; }
+.nav__brand:focus-visible .mini-mark__led { animation: ledFlicker .55s linear; }
 @keyframes ledFlicker {
   0% { opacity: 1; } 15% { opacity: .15; } 30% { opacity: .9; }
   45% { opacity: .25; } 65%, 100% { opacity: 1; }
 }
-.mini-mark--footer { width: 30px; margin-bottom: 6px; }
+.mini-mark--footer { width: 28px; margin-bottom: 6px; }
 
 /* ---------- Burger ---------- */
 .burger {
@@ -673,7 +723,7 @@ body.menu-open .hero .led-strip--hero { opacity: 0; transition: opacity .3s var(
     transition-duration: .001ms !important;
   }
   .reveal, .led-strip { opacity: 1 !important; transform: none; }
-  .brand-mark--hero .bm-light, .brand-mark--hero .bm-plus { animation: none; }
+  .brand-mark--hero .cube-sway, .brand-mark--hero .cube-halo, .brand-mark--hero .cube__mono { animation: none; }
   .hero__scroll-arrow, .fab__pulse, .led-strip.reveal.is-in { animation: none; opacity: .9; }
   .lightbox__track.is-animating { transition: none; }
 }

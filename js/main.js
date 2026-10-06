@@ -172,105 +172,119 @@
 
   function initBrandMark(onReveal) {
     const root = heroMark;
-    const svg = $('.brand-mark__svg', root);
     const q = (sel) => $(sel, root);
-    const guides = q('.bm-guides');
-    const guideLines = $$('.bm-guides .bm-draw', root);
-    const dims = $$('.bm-dim', root);
-    const pencil = q('.bm-pencil');
-    const outline = $$('.bm-mo', root);
-    const ends = q('.bm-ends');
-    const layers = $$('.bm-ply .bm-draw', root);
-    const sheen = q('#bm-sheen');
-    const lights = $$('.bm-light', root);
-    const plus = $$('.bm-plus .bm-draw', root);
-    const plusGroup = q('.bm-plus');
-    const cutters = $$('.bm-cutter', root);
+    const tilt = q('.cube-tilt');
+    const plan = q('.cube-plan');
+    const planLines = $$('.cube-plan .bm-draw', root);
+    const outline = q('.cube-plan__outline');
+    const folds = q('.cube-plan__fold');
+    const labels = q('.cube-plan__labels');
+    const cutter = q('.cube-plan__cutter');
+    const cube = q('.cube');
+    const halo = q('.cube-halo');
+    const mono = q('.cube__mono');
     const word = q('.brand-mark__word');
-    const touched = [guides, ...guideLines, ...dims, pencil, ...outline, ends, ...layers,
-      ...lights, ...plus, plusGroup, ...cutters, word];
+    const face = (n) => q(`.cube__face--${n}`);
+    const shade = (n) => q(`.cube__face--${n} > .cube__shade`);
+
+    // шарниры: ось и знак поворота каждой грани; финальная светотень — как в CSS
+    const HINGES = {
+      front: ['X', 1], back: ['X', -1], lid: ['X', -1], left: ['Y', 1], right: ['Y', -1],
+    };
+    const SHADE = { front: 0.08, left: 0.45, right: 0.55, back: 0.55, lid: 0.16, base: 0.6 };
+    const touched = [plan, ...planLines, folds, labels, cutter, cube, halo, mono, word,
+      ...Object.keys(SHADE).flatMap((n) => [face(n), shade(n)])];
 
     const draw = (el, p) => { el.style.strokeDashoffset = 100 * (1 - p); };
+    const outlineLen = outline.getTotalLength();
+    const size = () => face('base').offsetWidth;
 
-    // два «резца» идут по кромкам ленты: точка на оси ± полуширина по нормали
-    const spine = outline[0];
-    const spineLen = spine.getTotalLength();
-    const HALF = 5.5;
-    const cut = (p) => {
-      const l = spineLen * p;
-      const a = spine.getPointAtLength(Math.max(0, l - 0.5));
-      const b = spine.getPointAtLength(Math.min(spineLen, l + 0.5));
-      const len = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-      const nx = -(b.y - a.y) / len, ny = (b.x - a.x) / len;
-      const c = spine.getPointAtLength(l);
-      cutters.forEach((el, i) => {
-        const k = i ? -HALF : HALF;
-        el.setAttribute('cx', c.x + nx * k);
-        el.setAttribute('cy', c.y + ny * k);
-        el.style.opacity = p < 1 ? 1 : 0;
-      });
+    // поза короба: развёртка «ложится на стол» и поворачивается в три четверти
+    const pose = { ty: 0.5, ax: 0, az: 0, tz: 0, k: 1 };
+    const setPose = () => {
+      const S = size();
+      cube.style.transform = `translateY(${pose.ty * S}px) rotateX(${pose.ax}deg) rotateZ(${pose.az}deg) ` +
+        `translateZ(${-pose.tz * S}px) scale3d(${pose.k}, ${pose.k}, ${pose.k})`;
     };
+    const fold = (n, p) => {
+      const [axis, sign] = HINGES[n];
+      face(n).style.transform = `rotate${axis}(${sign * 90 * p}deg)`;
+      shade(n).style.opacity = SHADE[n] * p;
+    };
+    const lerp = (a, b, p) => a + (b - a) * p;
 
     const tracks = [
-      // 1. чертёж: оси, диагональ, циркульные радиусы гибов, размеры
-      ...guideLines.map((el, i) => ({ at: i * 50, dur: 600, ease: ease.inOut, fn: (p) => draw(el, p) })),
-      { at: 500, dur: 360, fn: (p) => dims.forEach((d) => { d.style.opacity = p; }) },
-
-      // 2. карандаш: две кромки ленты, затем торцы
-      { at: 400, dur: 1050, ease: ease.inOut, fn: (p) => { outline.forEach((el) => draw(el, p)); cut(p); } },
-      { at: 1400, dur: 220, fn: (p) => draw(ends, p) },
-
-      // 3. шпон ложится слой за слоем, как в прессе; разметка гаснет
-      ...layers.map((el, i) => ({ at: 1500 + i * 110, dur: 700, ease: ease.inOut, fn: (p) => draw(el, p) })),
-      { at: 1900, dur: 600, fn: (p) => {
-        pencil.style.opacity = 1 - p;
-        guides.style.opacity = 0.6 * (1 - p);
+      // 1. чертёж развёртки: оси, размеры, контур резцом, линии сгиба, подписи
+      ...planLines.filter((el) => el !== outline).map((el, i) => ({
+        at: i * 80, dur: 650, ease: ease.inOut, fn: (p) => draw(el, p),
+      })),
+      { at: 300, dur: 1150, ease: ease.inOut, fn: (p) => {
+        draw(outline, p);
+        const pt = outline.getPointAtLength(outlineLen * p);
+        cutter.setAttribute('cx', pt.x); cutter.setAttribute('cy', pt.y);
+        cutter.style.opacity = p < 1 ? 1 : 0;
       } },
-      { at: 2300, dur: 850, ease: ease.inOut, fn: (p) => {
-        const x = -30 + 160 * p;
-        sheen.setAttribute('x1', x - 15); sheen.setAttribute('x2', x + 15);
+      { at: 950, dur: 450, fn: (p) => { folds.style.opacity = p; labels.style.opacity = p; } },
+
+      // 2. панели становятся деревом уже на ходу — плоской деревянной развёртки не видно
+      { at: 1620, dur: 420, fn: (p) => { cube.style.opacity = p; } },
+      { at: 1640, dur: 420, fn: (p) => { plan.style.opacity = 1 - p; } },
+
+      // 3. развёртка ложится и разворачивается, грани поднимаются, крышка захлопывается
+      { at: 1480, dur: 800, ease: ease.inOut, fn: (p) => {
+        pose.ty = lerp(0.5, 0, p); pose.ax = 58 * p; setPose();
+      } },
+      { at: 1650, dur: 1100, ease: ease.inOut, fn: (p) => { pose.az = -42 * p; setPose(); } },
+      { at: 1560, dur: 950, ease: ease.inOut, fn: (p) => { pose.tz = 0.5 * p; setPose(); } },
+      { at: 1560, dur: 560, ease: ease.inOut, fn: (p) => fold('front', p) },
+      { at: 1640, dur: 560, ease: ease.inOut, fn: (p) => fold('left', p) },
+      { at: 1700, dur: 560, ease: ease.inOut, fn: (p) => fold('right', p) },
+      { at: 1800, dur: 560, ease: ease.inOut, fn: (p) => fold('back', p) },
+      { at: 1800, dur: 300, fn: (p) => { shade('base').style.opacity = SHADE.base * p; } },
+      { at: 2200, dur: 380, ease: (t) => t * t * t, fn: (p) => fold('lid', p) },
+
+      // 4. щелчок: модуль чуть «приседает», швы вспыхивают
+      { at: 2580, dur: 0, fn: () => cube.classList.add('is-sealed') },
+      { at: 2580, dur: 320, ease: ease.linear, fn: (p) => {
+        pose.k = 1 + 0.035 * Math.sin(p * Math.PI) * (1 - p * 0.4); setPose();
       } },
 
-      // 4. в сердцевине включается LED-лента
-      { at: 2450, dur: 560, ease: ease.linear, fn: (p) => {
+      // 5. на фасаде загорается «И⁺», вокруг — тёплое пятно
+      { at: 2700, dur: 560, ease: ease.linear, fn: (p) => {
         const o = flicker(p);
-        lights.forEach((el) => { el.style.opacity = o; });
+        mono.style.opacity = o; halo.style.opacity = o;
       } },
-
-      // 5. «⁺» прочерчивается и вспыхивает
-      ...plus.map((el) => ({ at: 2750, dur: 280, fn: (p) => draw(el, p) })),
-      { at: 2800, dur: 450, ease: ease.linear, fn: (p) => { plusGroup.style.opacity = flicker(p); } },
 
       // 6. слово раскрывается от центра
-      { at: 2900, dur: 800, fn: (p) => {
+      { at: 2950, dur: 800, fn: (p) => {
         const c = 50 * (1 - p);
         word.style.opacity = p;
         word.style.clipPath = `inset(-20% ${c}% -20% ${c}%)`;
         word.style.transform = `scaleX(${1.1 - 0.1 * p})`;
       } },
-      { at: 2950, dur: 0, fn: onReveal },
+      { at: 3000, dur: 0, fn: onReveal },
     ];
 
     playTimeline(tracks, () => {
       root.classList.add('is-done');
       touched.forEach((el) => el.removeAttribute('style'));
-      sheen.setAttribute('x1', -80); sheen.setAttribute('x2', -50);
+      setTimeout(() => cube.classList.remove('is-sealed'), 1400);
     });
 
-    // лёгкий наклон знака за курсором (только мышь)
+    // модуль поворачивается за курсором в настоящем 3D (только мышь)
     if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
       const hero = $('#hero');
       let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
       const tick = () => {
         cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
-        svg.style.transform = `perspective(500px) rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
+        tilt.style.transform = `rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
         raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.01 ? requestAnimationFrame(tick) : 0;
       };
       const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
       hero.addEventListener('pointermove', (e) => {
-        const r = svg.getBoundingClientRect();
-        tx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2))) * 4;
-        ty = -Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2))) * 4;
+        const r = tilt.getBoundingClientRect();
+        tx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2))) * 10;
+        ty = -Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2))) * 10;
         kick();
       });
       hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
