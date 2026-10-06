@@ -10,7 +10,8 @@
      Чтобы добавить работу — положите фото в assets/work-examples/<...>/
      и добавьте новый элемент в массив ниже (можно переиспользовать
      существующую категорию или завести новую — фильтры соберутся сами).
-     note — необязательная подпись под названием. ---- */
+     note — необязательная подпись под названием,
+     materials — необязательная подпись на фото (например, «МДФ, эмаль · шпон дуба»). ---- */
   const TEMP = 'assets/work-examples/temp/';
   const WORKS = [
     {
@@ -382,7 +383,7 @@
         <span class="work__plan" aria-hidden="true"></span>
         <img class="work__img" data-src="${w.src}" alt="${escapeHtml(w.alt)}" decoding="async">
         <span class="work__scan" aria-hidden="true"></span>
-        <span class="work__dim" aria-hidden="true"><span>${escapeHtml(w.category)}</span><span>1:1</span></span>
+        ${w.materials ? `<span class="work__dim">${escapeHtml(w.materials)}</span>` : ''}
       </button>
       <div class="work__meta reveal">
         <span class="work__num" aria-hidden="true"></span>
@@ -534,11 +535,11 @@
     const byId = new Map(navLinks.map((a) => [a.getAttribute('href').slice(1), a]));
     const secIO = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
-        const link = byId.get(e.target.id);
-        if (link && e.isIntersecting) navLinks.forEach((a) => a.classList.toggle('is-current', a === link));
+        // раздел без пункта в шапке (hero, манифест, FAQ) снимает подсветку
+        if (e.isIntersecting) navLinks.forEach((a) => a.classList.toggle('is-current', a === byId.get(e.target.id)));
       });
     }, { rootMargin: '-45% 0px -50% 0px' });
-    byId.forEach((_, id) => { const sec = document.getElementById(id); if (sec) secIO.observe(sec); });
+    $$('main section[id]').forEach((sec) => secIO.observe(sec));
   }
 
   /* ---------- hero: CAD-координаты курсора ---------- */

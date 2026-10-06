@@ -125,7 +125,7 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
   width: 36px; height: 1px; background: var(--brass);
   box-shadow: 0 0 6px rgba(255,205,140,.6);
 }
-@media (max-width: 420px) { .label, .hero__eyebrow { letter-spacing: 0.16em; font-size: 11px; } }
+@media (max-width: 420px) { .label, .hero__eyebrow { letter-spacing: 0.16em; font-size: 12px; } }
 
 .head { max-width: 720px; }
 .head__title {
@@ -421,12 +421,12 @@ body.menu-open .menu__foot { opacity: 1; }
 .sheet__corner--br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
 .sheet__coords {
   position: absolute; left: 18px; bottom: 14px;
-  font-size: 11px; letter-spacing: .14em; color: var(--taupe); font-variant-numeric: tabular-nums;
+  font-size: 12px; letter-spacing: .14em; color: var(--taupe); font-variant-numeric: tabular-nums;
 }
 .sheet__stamp {
   position: absolute; right: 18px; bottom: 14px; margin: 0;
   display: grid; grid-template-columns: auto auto; border: 1px solid rgba(201,168,118,.35);
-  font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; text-align: left;
+  font-size: 12px; letter-spacing: .1em; text-transform: uppercase; text-align: left;
 }
 .sheet__stamp div { display: flex; gap: 10px; padding: 6px 10px; border: .5px solid rgba(201,168,118,.22); }
 .sheet__stamp dt { color: var(--taupe); }
@@ -449,7 +449,7 @@ body.menu-open .menu__foot { opacity: 1; }
 /* ======================= WORKS ======================= */
 .works__filters { margin-top: clamp(28px, 4vw, 40px); display: flex; flex-wrap: wrap; gap: 10px; }
 .filter-chip {
-  padding: 9px 18px; border-radius: 999px; font-size: 0.85rem; letter-spacing: 0.02em;
+  min-height: 44px; padding: 10px 20px; border-radius: 999px; font-size: 0.85rem; letter-spacing: 0.02em;
   color: var(--taupe); border: 1px solid var(--glass-stroke); background: rgba(255,235,205,0.03);
   transition: color .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease);
 }
@@ -496,9 +496,9 @@ body.menu-open .menu__foot { opacity: 1; }
   opacity: 0;
 }
 .work__dim {
-  position: absolute; z-index: 3; left: 12px; right: 12px; bottom: 10px;
-  display: flex; justify-content: space-between; pointer-events: none;
-  font-size: 10.5px; letter-spacing: .16em; color: rgba(243,236,223,.75); text-transform: uppercase;
+  position: absolute; z-index: 3; left: 14px; right: 14px; bottom: 12px;
+  display: flex; pointer-events: none;
+  font-size: 12px; letter-spacing: .14em; color: rgba(243,236,223,.85); text-transform: uppercase;
   text-shadow: 0 1px 6px rgba(0,0,0,.6);
 }
 /* стартовый кадр: виден чертёж, фото «под шторкой» */
@@ -521,7 +521,7 @@ body.menu-open .menu__foot { opacity: 1; }
 .work__title { font-family: var(--serif); font-weight: 300; font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.05; color: var(--cream-hi); }
 .work__note { color: var(--taupe); max-width: 40ch; }
 .work__more {
-  display: inline-flex; align-items: center; gap: 10px; margin-top: 6px;
+  display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; min-height: 44px;
   font-size: .92rem; color: var(--cream-hi); padding-bottom: 4px;
   border-bottom: 1px solid rgba(201,168,118,.45); transition: gap .3s var(--ease), border-color .3s var(--ease);
 }
@@ -593,6 +593,32 @@ body.menu-open .menu__foot { opacity: 1; }
 .metric__cap { grid-column: 1 / -1; color: var(--taupe); font-size: .9rem; margin-top: 6px; }
 @media (min-width: 900px) { .about__grid { grid-template-columns: 1.4fr 1fr; } }
 
+/* ======================= FAQ ======================= */
+.faq__list { margin-top: clamp(32px, 5vw, 52px); border-top: 1px solid var(--glass-stroke); max-width: 900px; }
+.faq__item { border-bottom: 1px solid var(--glass-stroke); }
+.faq__q {
+  list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  min-height: 44px; padding: clamp(20px, 3vw, 28px) 4px;
+  font-family: var(--serif); font-weight: 300; font-size: clamp(1.25rem, 3vw, 1.75rem); line-height: 1.2;
+  color: var(--cream-hi); transition: color .25s var(--ease);
+}
+.faq__q::-webkit-details-marker { display: none; }
+.faq__q:hover { color: #fff; }
+/* значок — шеврон из двух линий, поворачивается при раскрытии */
+.faq__icon {
+  position: relative; flex: none; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--glass-stroke); transition: border-color .3s var(--ease), transform .4s var(--ease);
+}
+.faq__icon::before {
+  content: ""; position: absolute; left: 50%; top: 45%; width: 8px; height: 8px;
+  border-right: 1.5px solid var(--brass-hi); border-bottom: 1.5px solid var(--brass-hi);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.faq__item[open] .faq__icon { transform: rotate(180deg); border-color: var(--led); box-shadow: 0 0 14px rgba(255,205,140,.35); }
+.faq__a { color: var(--taupe); max-width: 62ch; padding: 0 4px clamp(22px, 3vw, 30px); }
+.faq__item[open] .faq__a { animation: faqIn .45s var(--ease); }
+@keyframes faqIn { from { opacity: 0; transform: translateY(-6px); } }
+
 /* ======================= CONTACTS ======================= */
 .contacts { position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; overflow: hidden; }
 .contacts__cube {
@@ -636,7 +662,7 @@ body.menu-open .menu__foot { opacity: 1; }
 .footer__brand { display: flex; align-items: center; gap: 12px; }
 .footer__word { font-family: var(--serif); letter-spacing: 0.3em; font-size: .95rem; color: var(--cream-hi); }
 .footer__copy { font-size: 0.82rem; color: var(--taupe); }
-.footer__top { font-size: .82rem; color: var(--taupe); transition: color .25s var(--ease); }
+.footer__top { display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; font-size: .82rem; color: var(--taupe); transition: color .25s var(--ease); }
 .footer__top:hover { color: var(--cream-hi); }
 @media (max-width: 640px) { .footer { flex-direction: column; text-align: center; } }
 
@@ -729,6 +755,11 @@ body.menu-open .nav {
   -webkit-backdrop-filter: none; backdrop-filter: none;
 }
 body.menu-open .hero .brand-mark--hero { opacity: 0; transition: opacity .3s var(--ease); }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 
 /* ======================= REVEAL ======================= */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
