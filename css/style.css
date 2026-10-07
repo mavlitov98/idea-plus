@@ -605,8 +605,6 @@ body.menu-open .menu__panel { transform: none; transition: transform .8s cubic-b
 }
 .menu__pill svg { color: var(--brass-hi); flex: none; }
 .menu__pill:active { background: rgba(255,235,205,0.1); }
-.menu__city { font-size: .8rem; letter-spacing: .08em; color: var(--taupe); }
-@media (max-height: 700px) { .menu__city { display: none; } }
 
 /* открытие: после «доводчика» строки поднимаются по очереди, полки загораются */
 body.menu-open .menu__label { opacity: 1; transition-delay: .3s; }
