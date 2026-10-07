@@ -1,0 +1,15 @@
+ДЕМО-ФОТО ДЛЯ ПРЕДПРОСМОТРА. Это не наши работы: удалить эту папку и блок DEMO_WORKS в js/main.js перед публикацией.
+Источник: Unsplash, лицензия https://unsplash.com/license (бесплатно, указание автора не обязательно).
+
+wardrobe-vanity.jpg  автор: billy-jo-catbagan  https://unsplash.com/photos/SseNV6Ycb1c
+kitchen-walnut-island.jpg  автор: clay-banks  https://unsplash.com/photos/XU_ODlSO9ac
+living-tv-veneer.jpg  автор: prydumano-design  https://unsplash.com/photos/AL9YkVEHc3U
+bath-twin-vanities.jpg  автор: clay-banks  https://unsplash.com/photos/7Z2OTozIY_0
+living-builtin-shelves.jpg  автор: pickawood  https://unsplash.com/photos/nVHEXnN8PqI
+kitchen-walnut.jpg  автор: clay-banks  https://unsplash.com/photos/htmZWzApbJE
+kitchen-white-marble.jpg  автор: roam-in-color  https://unsplash.com/photos/z3QZ6gjGRt4
+bath-vanity-dark.jpg  автор: lotus-design-n-print  https://unsplash.com/photos/g51F6-WYzyU
+living-wall-shelves.jpg  автор: pickawood  https://unsplash.com/photos/o_dokgznFKQ
+bedroom-headboard.jpg  автор: mk-s  https://unsplash.com/photos/Zn-_1sjEHxs
+
+Файлы *-large.jpg: те же фото шириной 2800 px для слайдшоу на больших экранах.

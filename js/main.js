@@ -1,68 +1,115 @@
 /* =========================================================
-   ИДЕЯ ПЛЮС — interactions
-   brand intro · portfolio · manifesto · timeline ·
-   counters · filters · swipe lightbox · reveals
+   ИДЕЯ ПЛЮС: interactions
+   меню · шапка · появление при прокрутке · галерея · просмотр фото
+   Без обработчиков scroll: всё на IntersectionObserver.
    ========================================================= */
 (() => {
   'use strict';
 
-  /* ---- Работы. Каждый объект = одно фото готовой мебели.
-     Чтобы добавить работу — положите фото в assets/work-examples/<...>/
-     и добавьте новый элемент в массив ниже (можно переиспользовать
-     существующую категорию или завести новую — фильтры соберутся сами).
-     note — необязательная подпись под названием,
-     materials — необязательная подпись на фото (например, «МДФ, эмаль · шпон дуба»). ---- */
-  const TEMP = 'assets/work-examples/temp/';
+  /* ---- Работы. Один объект = один проект (одна или несколько фотографий).
+
+     Как добавить работу:
+       1. Создайте папку assets/work-examples/<название-латиницей>/ и положите туда фото.
+          Первое фото в списке станет обложкой.
+       2. Запустите  python3 tools/prepare-photos.py  (уменьшит тяжёлые фото
+          и сделает превью в подпапке thumbs/). Без превью сайт тоже работает,
+          просто грузит полные фото.
+       3. Добавьте объект в массив ниже. Новые работы ставьте наверх:
+          первые 6 видны сразу, остальные открываются кнопкой «Показать ещё».
+
+     hero: true = работа попадает в слайдшоу на первом экране (лучше 4-6 штук,
+     горизонтальные фото хорошего качества; без пометок берутся первые 5).
+     large: большая версия первого фото (~2800 px по ширине) для слайдшоу на больших и Retina-экранах,
+     называйте её <имя>-large.jpg; основное фото при этом должно быть ~1800 px.
+     focus: какую часть фото держать в кадре, когда он обрезается (в hero на телефоне),
+     в формате CSS object-position, например '20% 50%' = ближе к левому краю.
+     Поля: title и category обязательны; alt = описание фото для незрячих и поиска;
+     note = необязательная подпись под названием.
+     Категории фильтров собираются из поля category сами, пишите их одинаково. ---- */
   const WORKS = [
     {
-      id: 'vanity-khaki',
-      title: 'Тумба и пенал в ванную',
+      id: 'vanity-green',
+      title: 'Тумба и пеналы в ванную',
       category: 'Мебель для ванной',
-      src: TEMP + 'photo_1_2026-09-06_21-29-52.jpg',
-      alt: 'Ванная комната с тумбой и пеналом цвета хаки, подсветкой и рейчатой панелью',
-      note: 'Матовые фасады цвета хаки, рейчатая панель из шпона и встроенная подсветка ниши.',
+      photos: ['temp/photo_1_2026-09-06_21-29-52.jpg'],
+      alt: 'Ванная комната: высокие пеналы и тумба с зелёными матовыми фасадами, рейчатая панель из шпона над раковиной',
+      note: 'Матовые фасады, рейчатая панель из шпона и скрытые ручки-профили.',
     },
     {
       id: 'hallway-blue',
       title: 'Прихожая с гардеробной',
       category: 'Гардеробные',
-      src: TEMP + 'photo_2_2026-09-06_21-29-52.jpg',
-      alt: 'Прихожая со встроенным синим шкафом-купе и мягкой скамьёй для обуви',
-      note: 'Шкаф от пола до потолка, мягкие панели с крючками и скамья для обуви — одна система.',
+      photos: ['temp/photo_2_2026-09-06_21-29-52.jpg'],
+      alt: 'Прихожая со встроенным синим шкафом от пола до потолка и мягкой скамьёй с крючками',
+      note: 'Шкаф от пола до потолка, мягкие панели с крючками и скамья для обуви в одной системе.',
     },
     {
       id: 'bedroom-arch',
       title: 'Спальня с нишей-аркой',
       category: 'Спальни',
-      src: TEMP + 'photo_3_2026-09-06_21-29-52.jpg',
-      alt: 'Спальня с арочной нишей, встроенным синим шкафом и прикроватными тумбами',
+      photos: ['temp/photo_3_2026-09-06_21-29-52.jpg'],
+      alt: 'Спальня с арочной нишей, встроенным синим шкафом и подвесными прикроватными тумбами',
       note: 'Встроенный шкаф в тон стен, арочная ниша и подвесные тумбы вместо привычных ножек.',
     },
   ];
+  /* ---- ДЕМО: 10 фото с Unsplash, чтобы посмотреть, как сайт выглядит с хорошими снимками.
+     Это НЕ наши работы, публиковать их как свои нельзя. Перед публикацией удалите
+     этот блок целиком и папку assets/work-examples/demo-unsplash/ (авторы в ИСТОЧНИКИ.txt). ---- */
+  const DEMO = 'demo-unsplash/';
+  const DEMO_WORKS = [
+    { id: 'demo-wardrobe', hero: true, focus: '22% 50%', title: 'Гардеробная с туалетным столиком', category: 'Гардеробные', photos: [DEMO + 'wardrobe-vanity.jpg'], large: DEMO + 'wardrobe-vanity-large.jpg',
+      alt: 'Гардеробная: стеклянные фасады с подсветкой, открытые полки и туалетный столик с круглым зеркалом',
+      note: 'Стеклянные фасады, подсветка полок и столик с зеркалом в одной системе.' },
+    { id: 'demo-kitchen-island', hero: true, title: 'Кухня с островом', category: 'Кухни', photos: [DEMO + 'kitchen-walnut-island.jpg'], large: DEMO + 'kitchen-walnut-island-large.jpg',
+      alt: 'Кухня с деревянными фасадами, высокой колонной и островом со светлой столешницей' },
+    { id: 'demo-tv', title: 'ТВ-зона с колонной из шпона', category: 'Гостиные', photos: [DEMO + 'living-tv-veneer.jpg'],
+      alt: 'Гостиная: подвесная тумба под телевизор и высокая колонна, отделанная шпоном',
+      note: 'Подвесная тумба и колонна до потолка, фасады без ручек.' },
+    { id: 'demo-bath-twin', hero: true, title: 'Две тумбы под раковины', category: 'Мебель для ванной', photos: [DEMO + 'bath-twin-vanities.jpg'], large: DEMO + 'bath-twin-vanities-large.jpg',
+      alt: 'Ванная с двумя деревянными тумбами под раковины и овальными зеркалами' },
+    { id: 'demo-shelves-door', title: 'Стеллаж вокруг дверного проёма', category: 'Гостиные', photos: [DEMO + 'living-builtin-shelves.jpg'],
+      alt: 'Белый встроенный стеллаж с книгами, обрамляющий дверной проём, с закрытыми ящиками внизу' },
+    { id: 'demo-kitchen-walnut', title: 'Кухня из ореха', category: 'Кухни', photos: [DEMO + 'kitchen-walnut.jpg'],
+      alt: 'Небольшая кухня с ореховыми фасадами и открытыми полками над мойкой' },
+    { id: 'demo-kitchen-white', hero: true, title: 'Белая кухня с мраморным островом', category: 'Кухни', photos: [DEMO + 'kitchen-white-marble.jpg'], large: DEMO + 'kitchen-white-marble-large.jpg',
+      alt: 'Белая кухня с филёнчатыми фасадами, шестигранной плиткой и мраморным островом' },
+    { id: 'demo-bath-long', title: 'Ванная с длинной тумбой', category: 'Мебель для ванной', photos: [DEMO + 'bath-vanity-dark.jpg'],
+      alt: 'Ванная с длинной тёмной тумбой под две раковины и большим зеркалом в деревянной раме' },
+    { id: 'demo-shelves-wall', hero: true, title: 'Стеллаж во всю стену', category: 'Гостиные', photos: [DEMO + 'living-wall-shelves.jpg'], large: DEMO + 'living-wall-shelves-large.jpg',
+      alt: 'Гостиная со стеллажом во всю стену и бирюзовыми дверцами в нижнем ряду' },
+    { id: 'demo-bedroom', title: 'Спальня с мягким изголовьем', category: 'Спальни', photos: [DEMO + 'bedroom-headboard.jpg'],
+      alt: 'Спальня с высоким мягким изголовьем и тёмной прикроватной тумбой' },
+  ];
+  WORKS.unshift(...DEMO_WORKS);
+  /* ---- конец ДЕМО ---- */
+
+  const PHOTO_DIR = 'assets/work-examples/';
+  const FIRST_BATCH = 6;     // сколько работ видно сразу
+  const BATCH = 6;           // сколько добавляет «Показать ещё»
+  const FILTERS_FROM = 6;    // фильтры появляются, когда работ столько или больше
 
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+  const hasIO = 'IntersectionObserver' in window;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- year ---------- */
   const yearEl = $('#year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  // текущий раздел страницы — обновляется наблюдателем ниже, читается меню
+  // текущий раздел страницы: обновляется наблюдателем ниже, читается меню
   let currentSection = 'hero';
 
-  /* ---------- меню: выдвижной ящик ---------- */
+  /* ---------- мобильное меню ---------- */
   (() => {
     const burger = $('#burger');
     const menu = $('#menu');
     if (!burger || !menu) return;
-    const links = menu.querySelectorAll('a');
+    const links = $$('a', menu);
     let lastFocus = null;
-
     const isOpen = () => document.body.classList.contains('menu-open');
 
     function open() {
       lastFocus = document.activeElement;
-      // отмечаем раздел, в котором сейчас находимся
       links.forEach((a) => a.classList.toggle('is-current', a.dataset.section === currentSection));
       document.body.classList.add('menu-open');
       burger.setAttribute('aria-expanded', 'true');
@@ -70,7 +117,6 @@
       menu.setAttribute('aria-hidden', 'false');
       menu.removeAttribute('inert');
       document.addEventListener('keydown', onKey);
-      requestAnimationFrame(() => { const f = links[0]; if (f) f.focus(); });
     }
     function close(restore = true) {
       document.body.classList.remove('menu-open');
@@ -92,255 +138,86 @@
 
     burger.addEventListener('click', () => (isOpen() ? close() : open()));
     links.forEach((a) => a.addEventListener('click', () => close(false)));
+    // меню только для мобильной ширины: при развороте на десктоп закрываем
+    window.matchMedia('(min-width: 961px)').addEventListener('change', (m) => { if (m.matches && isOpen()) close(false); });
   })();
 
-  /* ---------- nav scroll state ---------- */
+  /* ---------- шапка получает фон, как только страница сдвинулась ---------- */
   const nav = $('#nav');
-  const onScroll = () => nav && nav.classList.toggle('is-scrolled', window.scrollY > 12);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
+  const sentinel = $('#top-sentinel');
+  if (nav && sentinel && hasIO) {
+    new IntersectionObserver(([e]) => nav.classList.toggle('is-scrolled', !e.isIntersecting)).observe(sentinel);
+  }
 
-  /* ---------- floating call button: скрыт в hero, прячется у footer ---------- */
+  /* ---------- кнопка звонка: скрыта в hero и у подвала ---------- */
   (() => {
     const fab = $('.fab');
-    const hero = $('#hero');
-    const footer = $('.footer');
-    if (!fab || !('IntersectionObserver' in window)) { if (fab) fab.classList.add('is-visible'); return; }
-    let heroVisible = true;
-    let footerVisible = false;
-    const update = () => fab.classList.toggle('is-visible', !heroVisible && !footerVisible);
-    if (hero) {
-      new IntersectionObserver((entries) => {
-        heroVisible = entries[0].isIntersecting;
-        update();
-      }, { threshold: 0 }).observe(hero);
-    }
-    if (footer) {
-      new IntersectionObserver((entries) => {
-        footerVisible = entries[0].isIntersecting;
-        update();
-      }, { threshold: 0 }).observe(footer);
-    }
+    if (!fab) return;
+    if (!hasIO) { fab.classList.add('is-visible'); return; }
+    const state = { hero: true, footer: false };
+    const update = () => fab.classList.toggle('is-visible', !state.hero && !state.footer);
+    const watch = (el, key) => el && new IntersectionObserver(([e]) => { state[key] = e.isIntersecting; update(); }).observe(el);
+    watch($('#hero'), 'hero');
+    watch($('.footer'), 'footer');
   })();
 
-  /* ---------- scroll reveal ---------- */
-  let revealIO = null;
-  function observeReveal(el) {
-    if (!('IntersectionObserver' in window)) { el.classList.add('is-in'); return; }
-    if (!revealIO) {
-      revealIO = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) { e.target.classList.add('is-in'); revealIO.unobserve(e.target); }
-        });
-      }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
-    }
-    revealIO.observe(el);
-  }
-  /* ---------- brand mark: чертёж → изделие → подсветка ---------- */
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const heroMark = $('#brand-hero');
-  // если предохранитель в <head> уже снял html.js (скрипт пришёл слишком поздно) — интро не играем
-  const heroIntro = !!heroMark && !reduceMotion && document.documentElement.classList.contains('js');
-  if (heroIntro) window.__introStarted = true;
-
-  // крошечный таймлайн на rAF: трек = { at, dur, ease, fn(p) }, время в мс
-  const ease = {
-    linear: (t) => t,
-    out: (t) => 1 - Math.pow(1 - t, 3),
-    inOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
-  };
-  function playTimeline(tracks, onEnd) {
-    const end = Math.max(...tracks.map((k) => k.at + k.dur));
-    let t0 = null;
-    function frame(now) {
-      if (t0 === null) t0 = now;
-      const t = now - t0;
-      tracks.forEach((k) => {
-        if (k.done || t < k.at) return;
-        const p = Math.min(1, (t - k.at) / (k.dur || 1));
-        k.fn((k.ease || ease.out)(p));
-        if (p === 1) k.done = true;
+  /* ---------- появление при прокрутке ---------- */
+  const revealIO = hasIO
+    ? new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        revealIO.unobserve(e.target);
       });
-      if (t < end) requestAnimationFrame(frame); else if (onEnd) onEnd();
-    }
-    requestAnimationFrame(frame);
+    }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' })
+    : null;
+  const observeReveal = (el) => (revealIO ? revealIO.observe(el) : el.classList.add('is-in'));
+  $$('.reveal').forEach(observeReveal);
+
+  // шаги процесса: заливка едет по желобку, ручки загораются по очереди
+  const steps = $('#steps');
+  if (steps) {
+    $$('.step', steps).forEach((st, i) => st.style.setProperty('--i', i));
+    if (hasIO) {
+      const stepsIO = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) { steps.classList.add('is-in'); stepsIO.disconnect(); }
+      }, { threshold: 0.35 });
+      stepsIO.observe(steps);
+    } else steps.classList.add('is-in');
   }
 
-  // кусочно-линейная кривая: включение LED с «дребезгом»
-  const FLICKER = [[0, 0], [0.08, 0.9], [0.14, 0.1], [0.24, 0.75], [0.3, 0.15], [0.42, 1], [0.5, 0.45], [0.6, 1], [1, 1]];
-  function flicker(p) {
-    for (let i = 1; i < FLICKER.length; i++) {
-      const [x1, y1] = FLICKER[i], [x0, y0] = FLICKER[i - 1];
-      if (p <= x1) return y0 + (y1 - y0) * ((p - x0) / (x1 - x0));
-    }
-    return 1;
-  }
-
-  function initBrandMark(onReveal) {
-    const root = heroMark;
-    const q = (sel) => $(sel, root);
-    const tilt = q('.piece-tilt');
-    const plan = q('.piece-plan');
-    const planLines = $$('.piece-plan .bm-draw', root);
-    const outline = q('.piece-plan__outline');
-    const folds = q('.piece-plan__fold');
-    const labels = q('.piece-plan__labels');
-    const cutter = q('.piece-plan__cutter');
-    const piece = q('.piece');
-    const plies = $$('.ply', root);
-    const plus = $$('.wall__plus, .wall__plus-glow', root);
-    const frame = q('.mirror__frame');
-    const sheenRect = q('#mirror-sheen-rect');
-    const word = q('.brand-mark__word');
-    const face = (n) => q(`.pf--${n}`);
-    const shade = (n) => q(`.pf--${n} > .pf__shade`);
-
-    // шарниры: ось и знак поворота каждой панели; финальная светотень — как в CSS
-    const HINGES = {
-      front: ['X', 1], back: ['X', -1], lid: ['X', -1], left: ['Y', 1], right: ['Y', -1],
-    };
-    const SHADE = { front: 0.06, left: 0.42, right: 0.55, back: 0.55, lid: 0.1, base: 0.6 };
-    const touched = [plan, ...planLines, folds, labels, cutter, piece, word, ...plies, ...plus, frame, sheenRect,
-      ...Object.keys(SHADE).flatMap((n) => [face(n), shade(n)])];
-
-    // 101: при p = 0 штрих полностью скрыт, без «торца» нулевой длины
-    const draw = (el, p) => { el.style.strokeDashoffset = 101 * (1 - p); };
-    const vary = (name, v) => piece.style.setProperty(name, v);
-    const outlineLen = outline.getTotalLength();
-    const size = () => face('base').offsetHeight / 0.75; // высота дна = 0.75 стороны --s
-
-    // развёртка стартует опущенной (= --plan-shift в CSS), чтобы чертёж не наезжал на подпись;
-    // 0.375 — смещение центра дна от центра развёртки
-    const PLAN_SHIFT = 0.8;
-    const TY0 = 0.375 + PLAN_SHIFT;
-    const pose = { ty: TY0, ax: 0, az: 0, tz: 0, k: 1 };
-    const setPose = () => {
-      const S = size();
-      piece.style.transform = `translateY(${pose.ty * S}px) rotateX(${pose.ax}deg) rotateZ(${pose.az}deg) ` +
-        `translateZ(${-pose.tz * S}px) scale3d(${pose.k}, ${pose.k}, ${pose.k})`;
-    };
-    const fold = (n, p) => {
-      const [axis, sign] = HINGES[n];
-      face(n).style.transform = `rotate${axis}(${sign * 90 * p}deg)`;
-      shade(n).style.opacity = SHADE[n] * p;
-    };
-    const lerp = (a, b, p) => a + (b - a) * p;
-    const backOut = (t) => 1 + 2.4 * Math.pow(t - 1, 3) + 1.4 * Math.pow(t - 1, 2);
-
-    const tracks = [
-      // 1. чертёж развёртки: оси, размеры, контур резцом, линии сгиба, подписи
-      ...planLines.filter((el) => el !== outline).map((el, i) => ({
-        at: i * 80, dur: 650, ease: ease.inOut, fn: (p) => draw(el, p),
-      })),
-      { at: 300, dur: 1150, ease: ease.inOut, fn: (p) => {
-        draw(outline, p);
-        const pt = outline.getPointAtLength(outlineLen * p);
-        cutter.setAttribute('cx', pt.x); cutter.setAttribute('cy', pt.y);
-        cutter.style.opacity = p < 1 ? 1 : 0;
-      } },
-      { at: 950, dur: 450, fn: (p) => { folds.style.opacity = p; labels.style.opacity = p; } },
-
-      // 2. панели становятся деревом уже на ходу — плоской деревянной развёртки не видно
-      { at: 1620, dur: 420, fn: (p) => { piece.style.opacity = p; } },
-      { at: 1640, dur: 420, fn: (p) => { plan.style.opacity = 1 - p; } },
-
-      // 3. развёртка ложится и разворачивается, панели поднимаются, крышка захлопывается
-      { at: 1480, dur: 800, ease: ease.inOut, fn: (p) => {
-        pose.ty = lerp(TY0, 0, p); pose.ax = 66 * p; setPose();
-      } },
-      { at: 1650, dur: 1100, ease: ease.inOut, fn: (p) => { pose.az = -30 * p; setPose(); } },
-      { at: 1560, dur: 950, ease: ease.inOut, fn: (p) => { pose.tz = 0.42 * p; setPose(); } },
-      { at: 1560, dur: 560, ease: ease.inOut, fn: (p) => fold('front', p) },
-      { at: 1640, dur: 560, ease: ease.inOut, fn: (p) => fold('left', p) },
-      { at: 1700, dur: 560, ease: ease.inOut, fn: (p) => fold('right', p) },
-      { at: 1800, dur: 560, ease: ease.inOut, fn: (p) => fold('back', p) },
-      { at: 1800, dur: 300, fn: (p) => { shade('base').style.opacity = SHADE.base * p; } },
-      { at: 2200, dur: 380, ease: (t) => t * t * t, fn: (p) => fold('lid', p) },
-
-      // 4. щелчок: корпус чуть «приседает», швы вспыхивают
-      { at: 2580, dur: 0, fn: () => piece.classList.add('is-sealed') },
-      { at: 2580, dur: 320, ease: ease.linear, fn: (p) => {
-        pose.k = 1 + 0.03 * Math.sin(p * Math.PI) * (1 - p * 0.4); setPose();
-      } },
-
-      // 5. комод: вырастают ножки (сцена опускается, освобождая место стене), фасады — в рейку
-      { at: 2650, dur: 500, fn: (p) => { vary('--leg', p); pose.tz = lerp(0.42, 1.1, p); setPose(); } },
-      { at: 2750, dur: 500, fn: (p) => vary('--fr', p) },
-
-      // 6. дверца распахивается, в нише включается LED-лента
-      { at: 3000, dur: 700, ease: backOut, fn: (p) => vary('--door', (-105 * p).toFixed(2)) },
-      { at: 3150, dur: 560, ease: ease.linear, fn: (p) => { const o = flicker(p).toFixed(3); vary('--lit', o); vary('--hl', o); } },
-
-      // 7. над комодом прорисовывается арочное зеркало, включается его подсветка, по стеклу — блик
-      { at: 3200, dur: 650, ease: ease.inOut, fn: (p) => draw(frame, p) },
-      { at: 3400, dur: 400, fn: (p) => vary('--glass', p) },
-      { at: 3700, dur: 520, ease: ease.linear, fn: (p) => vary('--mlit', flicker(p).toFixed(3)) },
-      { at: 4150, dur: 750, ease: ease.inOut, fn: (p) => {
-        const x = -90 + 240 * p;
-        const g = q('#mirror-sheen');
-        g.setAttribute('x1', x); g.setAttribute('x2', x + 30);
-      } },
-
-      // 8. внутри зеркала слоями шпона рисуется «И⁺» (слои почти вместе — растёт полосатая лента)
-      ...plies.map((el, i) => ({ at: 3800 + i * 35, dur: 700, ease: ease.inOut, fn: (p) => draw(el, p) })),
-      ...plus.map((el) => ({ at: 4400, dur: 260, fn: (p) => draw(el, p) })),
-      { at: 4400, dur: 520, ease: ease.linear, fn: (p) => vary('--wlit', flicker(p).toFixed(3)) },
-
-      // 9. слово раскрывается от центра
-      { at: 4450, dur: 800, fn: (p) => {
-        const c = 50 * (1 - p);
-        word.style.opacity = p;
-        word.style.clipPath = `inset(-20% ${c}% -20% ${c}%)`;
-        word.style.transform = `scaleX(${1.1 - 0.1 * p})`;
-      } },
-      { at: 4500, dur: 0, fn: onReveal },
-    ];
-
-    // общий темп интро: тайминги выше записаны «в полной скорости», здесь сжимаем их целиком
-    const SPEED = 0.74;
-    tracks.forEach((k) => { k.at *= SPEED; k.dur *= SPEED; });
-
-    playTimeline(tracks, () => {
-      root.classList.add('is-done');
-      touched.forEach((el) => el.removeAttribute('style'));
-      const g = q('#mirror-sheen'); g.setAttribute('x1', -90); g.setAttribute('x2', -60);
-      setTimeout(() => piece.classList.remove('is-sealed'), 1400);
-    });
-
-    // модуль поворачивается за курсором в настоящем 3D (только мышь)
-    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      const hero = $('#hero');
-      let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
-      const tick = () => {
-        cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
-        tilt.style.transform = `rotateX(${cy.toFixed(2)}deg) rotateY(${cx.toFixed(2)}deg)`;
-        raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.01 ? requestAnimationFrame(tick) : 0;
-      };
-      const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
-      hero.addEventListener('pointermove', (e) => {
-        const r = tilt.getBoundingClientRect();
-        tx = Math.max(-1, Math.min(1, (e.clientX - (r.left + r.width / 2)) / (window.innerWidth / 2))) * 10;
-        ty = -Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height / 2)) / (window.innerHeight / 2))) * 10;
-        kick();
+  /* ---------- циферблаты: цифры считаются вверх, пока заполняется кольцо (1.8 с, как в CSS) ---------- */
+  const counters = $$('[data-count]');
+  if (counters.length && hasIO && !reduceMotion) {
+    counters.forEach((el) => { el.textContent = '0'; });
+    const countIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        countIO.unobserve(e.target);
+        const el = e.target, to = +el.dataset.count, t0 = performance.now() + 200;
+        const tick = (now) => {
+          const p = Math.min(1, Math.max(0, (now - t0) / 1800));
+          el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
       });
-      hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; kick(); });
-    }
+    }, { threshold: 0.6 });
+    counters.forEach((el) => countIO.observe(el));
   }
 
-  // в hero остальные элементы ждут, пока знак «изготовится»
-  const heroLate = heroIntro ? $$('.hero .reveal:not(.hero__eyebrow)') : [];
-  $$('.reveal').forEach((el) => { if (!heroLate.includes(el)) observeReveal(el); });
-
-  if (heroIntro) {
-    const start = () => initBrandMark(() => heroLate.forEach((el) => el.classList.add('is-in')));
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) { io.disconnect(); start(); }
-      }, { threshold: 0.3 });
-      io.observe(heroMark);
-    } else start();
-  } else if (heroMark) {
-    heroMark.classList.add('is-done');
+  /* ---------- текущий раздел: подсветка пункта в шапке ---------- */
+  if (hasIO) {
+    const navLinks = $$('.nav__links a');
+    const byId = new Map(navLinks.map((a) => [a.getAttribute('href').slice(1), a]));
+    const secIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        currentSection = e.target.id;
+        navLinks.forEach((a) => a.classList.toggle('is-current', a === byId.get(e.target.id)));
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    $$('main section[id]').forEach((sec) => secIO.observe(sec));
   }
 
   function escapeHtml(s) {
@@ -349,36 +226,35 @@
     ));
   }
 
+  // смена раскладки с плавным переездом карточек (View Transitions), если браузер умеет
+  const canMorph = !!document.startViewTransition && !reduceMotion;
+  const morph = (fn) => (canMorph ? document.startViewTransition(fn) : fn());
+
   /* ========================================================
-     WORKS — журнальная вёрстка, фото проявляется из чертежа
+     ГАЛЕРЕЯ: группы «большая + две поменьше», стороны чередуются;
+     первые FIRST_BATCH работ сразу, остальные по кнопке
      ======================================================== */
+  const photoUrl = (p) => PHOTO_DIR + p;
+  // превью: <папка>/thumbs/<имя>.webp (делает tools/prepare-photos.py); если его нет, берём оригинал
+  const thumbUrl = (p) => PHOTO_DIR + p.replace(/([^/]+)\.\w+$/, 'thumbs/$1.webp');
+
   const grid = $('#works-grid');
   const filtersEl = $('#works-filters');
-  const categories = ['Все', ...Array.from(new Set(WORKS.map((w) => w.category)))];
+  const moreWrap = $('#works-more');
+  const moreBtn = $('#works-more-btn');
+  const moreNote = $('#works-more-note');
   let activeCategory = 'Все';
-
+  let shownCount = FIRST_BATCH;
   const cardsById = new Map();
 
-  // ленивая загрузка с запасом в один экран — фото начинает грузиться заранее
-  const loadImg = (img) => { if (!img.src && img.dataset.src) img.src = img.dataset.src; };
-  const preloadIO = 'IntersectionObserver' in window
-    ? new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        preloadIO.unobserve(e.target);
-        loadImg($('.work__img', e.target));
-      });
-    }, { rootMargin: '100% 0px' })
-    : null;
-
-  // фото проявляется, когда кадр в экране и снимок уже загружен (до этого — плашка с переливом)
-  const showIO = 'IntersectionObserver' in window && !reduceMotion
+  // фото проявляется, когда карточка в экране и снимок загружен
+  const showIO = hasIO && !reduceMotion
     ? new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (!e.isIntersecting) return;
         const card = e.target;
         showIO.unobserve(card);
-        const img = $('.work__img', card);
+        const img = $('img', card);
         const show = () => card.classList.add('is-shown');
         if (img.complete && img.naturalWidth) show();
         else {
@@ -386,217 +262,117 @@
           img.addEventListener('error', show, { once: true });
         }
       });
-    }, { threshold: 0.3 })
+    }, { threshold: 0.15 })
     : null;
 
-  categories.forEach((cat) => {
-    const chip = document.createElement('button');
-    chip.type = 'button';
-    chip.className = 'filter-chip' + (cat === activeCategory ? ' is-active' : '');
-    chip.dataset.category = cat;
-    chip.setAttribute('aria-pressed', cat === activeCategory ? 'true' : 'false');
-    chip.textContent = cat;
-    chip.addEventListener('click', () => applyFilter(cat));
-    filtersEl.appendChild(chip);
-  });
-
   WORKS.forEach((w) => {
+    const count = w.photos.length;
     const card = document.createElement('article');
     card.className = 'work';
-    card.dataset.category = w.category;
+    card.hidden = true;
+    card.style.viewTransitionName = 'work-' + w.id;
     card.innerHTML = `
       <button class="work__frame" type="button" aria-label="Открыть фото: ${escapeHtml(w.title)}">
-        <img class="work__img" data-src="${w.src}" alt="${escapeHtml(w.alt)}" decoding="async">
-        ${w.materials ? `<span class="work__dim">${escapeHtml(w.materials)}</span>` : ''}
+        <img src="${thumbUrl(w.photos[0])}" alt="${escapeHtml(w.alt || w.title)}" loading="lazy" decoding="async">
       </button>
-      <div class="work__meta reveal">
-        <span class="work__num" aria-hidden="true"></span>
-        <span class="work__cat">${escapeHtml(w.category)}</span>
+      <div class="work__cap">
         <h3 class="work__title">${escapeHtml(w.title)}</h3>
-        ${w.note ? `<p class="work__note">${escapeHtml(w.note)}</p>` : ''}
-        <button class="work__more" type="button">Смотреть фото <span aria-hidden="true">→</span></button>
-      </div>`;
-    const openThis = () => {
-      const visible = getVisibleWorks();
-      const idx = visible.findIndex((v) => v.id === w.id);
-      if (idx > -1) Lightbox.open(visible, idx);
-    };
-    $('.work__frame', card).addEventListener('click', openThis);
-    $('.work__more', card).addEventListener('click', openThis);
-
+        <span class="work__cat">${escapeHtml(w.category)}${count > 1 ? `, ${count} фото` : ''}</span>
+      </div>
+      ${w.note ? `<p class="work__note">${escapeHtml(w.note)}</p>` : ''}`;
+    const img = $('img', card);
+    // превью ещё не сделано: один раз переключаемся на оригинал
+    img.addEventListener('error', () => { if (img.src.includes('/thumbs/')) img.src = photoUrl(w.photos[0]); }, { once: true });
+    $('.work__frame', card).addEventListener('click', () => {
+      const list = filtered();
+      Lightbox.open(list, list.indexOf(w));
+    });
     grid.appendChild(card);
-    observeReveal($('.work__meta', card));
-    if (preloadIO) preloadIO.observe(card); else loadImg($('.work__img', card));
-    if (showIO) showIO.observe(card); else card.classList.add('is-shown');
     cardsById.set(w.id, card);
   });
-  layoutWorks();
 
-  // номера и чередование сторон — по видимым работам
-  function layoutWorks() {
-    getVisibleWorks().forEach((w, i) => {
-      const card = cardsById.get(w.id);
-      card.classList.toggle('is-flip', i % 2 === 1);
-      $('.work__num', card).textContent = String(i + 1).padStart(2, '0');
+  const filtered = () => (activeCategory === 'Все' ? WORKS : WORKS.filter((w) => w.category === activeCategory));
+
+  if (WORKS.length >= FILTERS_FROM) {
+    const counts = new Map();
+    WORKS.forEach((w) => counts.set(w.category, (counts.get(w.category) || 0) + 1));
+    [['Все', WORKS.length], ...counts].forEach(([cat, n]) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'pill';
+      chip.dataset.category = cat;
+      chip.setAttribute('aria-pressed', String(cat === activeCategory));
+      chip.innerHTML = `${escapeHtml(cat)}<span class="pill__count">${n}</span>`;
+      chip.addEventListener('click', () => {
+        if (cat === activeCategory) return;
+        morph(() => {
+          activeCategory = cat;
+          shownCount = FIRST_BATCH;
+          $$('.pill', filtersEl).forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.category === cat)));
+          renderWorks();
+        });
+      });
+      filtersEl.appendChild(chip);
+    });
+    filtersEl.hidden = false;
+  }
+
+  if (moreBtn) {
+    moreBtn.addEventListener('click', () => {
+      const from = shownCount;
+      shownCount += BATCH;
+      renderWorks(from);
+      // фокус на первую новую работу, чтобы с клавиатуры не возвращаться к началу
+      const first = filtered()[from];
+      if (first) $('.work__frame', cardsById.get(first.id)).focus({ preventScroll: true });
     });
   }
 
-  function getVisibleWorks() {
-    return activeCategory === 'Все' ? WORKS : WORKS.filter((w) => w.category === activeCategory);
-  }
+  // раскладка по показанным работам: полные тройки = большая + две малые,
+  // хвост из одной работы = во всю ширину, из двух = пополам.
+  // newFrom: индекс, с которого работы только что добавлены (для анимации появления)
+  function renderWorks(newFrom = -1) {
+    const list = filtered();
+    const shown = list.slice(0, shownCount);
+    const fullGroups = Math.floor(shown.length / 3);
+    const tail = shown.length - fullGroups * 3;
 
-  function applyFilter(cat) {
-    activeCategory = cat;
-    $$('.filter-chip', filtersEl).forEach((chip) => {
-      const active = chip.dataset.category === cat;
-      chip.classList.toggle('is-active', active);
-      chip.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-    WORKS.forEach((w) => {
+    WORKS.forEach((w) => { cardsById.get(w.id).hidden = !shown.includes(w); });
+    shown.forEach((w, i) => {
       const card = cardsById.get(w.id);
-      const match = cat === 'Все' || w.category === cat;
-      if (match) {
-        card.classList.remove('is-hidden');
-        requestAnimationFrame(() => requestAnimationFrame(() => card.classList.remove('is-out')));
+      const group = Math.floor(i / 3);
+      card.classList.remove('work--big', 'work--small', 'work--wide', 'work--half', 'is-flip', 'is-new');
+      if (group < fullGroups) {
+        card.classList.add(i % 3 === 0 ? 'work--big' : 'work--small');
+        card.classList.toggle('is-flip', group % 2 === 1);
       } else {
-        card.classList.add('is-out');
-        window.setTimeout(() => { if (card.classList.contains('is-out')) card.classList.add('is-hidden'); }, 420);
+        card.classList.add(tail === 1 ? 'work--wide' : 'work--half');
+      }
+      if (newFrom > -1 && i >= newFrom && !reduceMotion) {
+        card.style.setProperty('--d', (i - newFrom) * 70 + 'ms');
+        void card.offsetWidth;
+        card.classList.add('is-new');
+      }
+      if (!card.dataset.watched) {
+        card.dataset.watched = '1';
+        if (showIO) showIO.observe(card); else card.classList.add('is-shown');
       }
     });
-    layoutWorks();
-  }
 
-  /* ---------- манифест: слова загораются по мере прокрутки ---------- */
-  const manifesto = $('#manifesto-text');
-  const words = [];
-  if (manifesto) {
-    // оборачиваем каждое слово, сохраняя <em>
-    const wrap = (node) => {
-      Array.from(node.childNodes).forEach((n) => {
-        if (n.nodeType === 3) {
-          const frag = document.createDocumentFragment();
-          n.textContent.split(/(\s+)/).forEach((part) => {
-            if (!part) return;
-            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
-            const span = document.createElement('span');
-            span.className = 'mw';
-            span.textContent = part;
-            frag.appendChild(span);
-            words.push(span);
-          });
-          n.replaceWith(frag);
-        } else if (n.nodeType === 1) wrap(n);
-      });
-    };
-    wrap(manifesto);
-  }
-
-  /* ---------- таймлайн процесса: свет течёт по рельсу ---------- */
-  const timeline = $('#timeline');
-  const steps = timeline ? $$('.step', timeline) : [];
-
-  /* ---------- единый обработчик прокрутки для «живых» секций ---------- */
-  let scrollRaf = 0;
-  const progress = $('#nav-progress');
-  function onScrollFx() {
-    scrollRaf = 0;
-    const vh = window.innerHeight;
-    if (progress) {
-      const max = document.documentElement.scrollHeight - vh;
-      progress.style.setProperty('--p', max > 0 ? (window.scrollY / max).toFixed(4) : 0);
-    }
-    if (words.length) {
-      const r = manifesto.getBoundingClientRect();
-      // текст «прочитан» целиком, когда его низ поднялся до 45% экрана
-      const p = reduceMotion ? 1 : Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.4)));
-      const lit = p * words.length;
-      words.forEach((w, i) => {
-        const v = Math.min(1, Math.max(0, lit - i));
-        w.style.setProperty('--lit', v.toFixed(3));
-        w.classList.toggle('is-edge', v > 0 && v < 1);
-      });
-    }
-    if (timeline) {
-      const r = timeline.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, (vh * 0.6 - r.top) / r.height));
-      timeline.style.setProperty('--p', p.toFixed(4));
-      const fillY = r.top + r.height * p;
-      steps.forEach((st) => {
-        const dot = st.firstElementChild.getBoundingClientRect();
-        st.classList.toggle('is-lit', dot.top + dot.height / 2 <= fillY + 1);
-      });
+    if (moreWrap) {
+      const left = list.length - shown.length;
+      moreWrap.hidden = left <= 0;
+      if (left > 0) {
+        const next = Math.min(BATCH, left);
+        moreBtn.textContent = `Показать ещё ${next}`;
+        moreNote.textContent = `Показано ${shown.length} из ${list.length}`;
+      }
     }
   }
-  const requestFx = () => { if (!scrollRaf) scrollRaf = requestAnimationFrame(onScrollFx); };
-  window.addEventListener('scroll', requestFx, { passive: true });
-  window.addEventListener('resize', requestFx);
-  onScrollFx();
-
-  /* ---------- цифры считаются вверх ---------- */
-  const counters = $$('[data-count]');
-  if (counters.length && 'IntersectionObserver' in window && !reduceMotion) {
-    counters.forEach((el) => { el.textContent = '0'; });
-    const countIO = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        countIO.unobserve(e.target);
-        const el = e.target, to = +el.dataset.count;
-        playTimeline([{ at: 200, dur: 1400, fn: (p) => { el.textContent = Math.round(to * p); } }]);
-      });
-    }, { threshold: 0.6 });
-    counters.forEach((el) => countIO.observe(el));
-  }
-
-  /* ---------- контакты: на фоне прорисовывается контур модуля ---------- */
-  const contacts = $('#contacts');
-  if (contacts) {
-    if ('IntersectionObserver' in window) {
-      const cIO = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) { contacts.classList.add('is-in'); cIO.disconnect(); }
-      }, { threshold: 0.25 });
-      cIO.observe(contacts);
-    } else contacts.classList.add('is-in');
-  }
-
-  /* ---------- текущий раздел: подсветка в шапке и мобильный индикатор «листа» ---------- */
-  const navLinks = $$('.nav__links a');
-  const sheet = $('.nav__sheet');
-  const sheetNum = $('#sheet-num');
-  const sheetName = $('#sheet-name');
-  if ('IntersectionObserver' in window) {
-    const byId = new Map(navLinks.map((a) => [a.getAttribute('href').slice(1), a]));
-    const setSheet = (sec) => {
-      if (!sheet || sheetName.textContent === sec.dataset.title) return;
-      sheetNum.textContent = sec.dataset.sheet;
-      sheetName.textContent = sec.dataset.title;
-      sheet.classList.remove('is-swap'); void sheet.offsetWidth; sheet.classList.add('is-swap');
-    };
-    const secIO = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        currentSection = e.target.id;
-        // раздел без пункта в шапке (hero, манифест, FAQ) снимает подсветку
-        navLinks.forEach((a) => a.classList.toggle('is-current', a === byId.get(e.target.id)));
-        if (e.target.dataset.title) setSheet(e.target);
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    $$('main section[id]').forEach((sec) => secIO.observe(sec));
-  }
-
-  /* ---------- hero: CAD-координаты курсора ---------- */
-  const coords = $('#coords');
-  if (coords && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    const hero = $('#hero');
-    hero.addEventListener('pointermove', (e) => {
-      const r = hero.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width) * 1000;
-      const y = (1 - (e.clientY - r.top) / r.height) * 1000;
-      coords.textContent = `X ${x.toFixed(1).padStart(6, '0')} · Y ${y.toFixed(1).padStart(6, '0')}`;
-    });
-  }
+  renderWorks();
 
   /* ========================================================
-     LIGHTBOX — fullscreen swipe viewer across visible works
+     LIGHTBOX: все фото всех работ подряд, свайп и стрелки
      ======================================================== */
   const Lightbox = (() => {
     const el = $('#lightbox');
@@ -604,111 +380,109 @@
     const viewport = $('.lightbox__viewport', el);
     const titleEl = $('#lb-title');
     const typeEl = $('#lb-type');
-    const dotsEl = $('#lb-dots');
     const counterEl = $('#lb-counter');
     const prevBtn = $('.lightbox__nav--prev', el);
     const nextBtn = $('.lightbox__nav--next', el);
+    const closeBtn = $('.lightbox__bar [data-close]', el);
 
-    let items = [];
+    let slides = [];   // { work, workIndex, photo, photoIndex }
+    let works = [];
     let index = 0;
     let lastFocus = null;
 
+    // в каждом слайде два слоя: превью (уже в кэше после сетки, видно сразу)
+    // и полное фото, которое проявляется поверх, как только загрузится
     function buildSlides() {
       track.innerHTML = '';
-      items.forEach((item) => {
+      slides.forEach((s) => {
         const slide = document.createElement('div');
         slide.className = 'lightbox__slide';
-        const img = document.createElement('img');
-        img.alt = item.alt;
-        img.dataset.src = item.src;
-        img.decoding = 'async';
-        img.addEventListener('load', () => img.classList.add('is-loaded'));
-        slide.appendChild(img);
+        const n = s.work.photos.length;
+        slide.innerHTML = `
+          <div class="lightbox__pic">
+            <img class="lightbox__thumb" alt="" draggable="false" decoding="async">
+            <img class="lightbox__full" alt="${escapeHtml((s.work.alt || s.work.title) + (n > 1 ? `, фото ${s.photoIndex + 1} из ${n}` : ''))}" draggable="false" decoding="async">
+          </div>`;
+        const thumb = $('.lightbox__thumb', slide);
+        const full = $('.lightbox__full', slide);
+        thumb.dataset.src = thumbUrl(s.photo);
+        full.dataset.src = photoUrl(s.photo);
+        thumb.addEventListener('error', () => { thumb.hidden = true; }, { once: true });
+        full.addEventListener('load', () => full.classList.add('is-loaded'), { once: true });
         track.appendChild(slide);
-      });
-      dotsEl.innerHTML = '';
-      items.forEach((_, i) => {
-        const d = document.createElement('button');
-        d.type = 'button';
-        d.setAttribute('aria-label', `Работа ${i + 1}`);
-        d.addEventListener('click', () => go(i));
-        dotsEl.appendChild(d);
       });
     }
 
     function loadAround(i) {
-      [i - 1, i, i + 1].forEach((n) => {
-        if (n < 0 || n >= items.length) return;
-        const img = track.children[n].firstElementChild;
-        if (img && !img.src && img.dataset.src) img.src = img.dataset.src;
+      [i - 1, i, i + 1, i + 2].forEach((n) => {
+        if (n < 0 || n >= slides.length) return;
+        $$('img', track.children[n]).forEach((img) => { if (!img.src && img.dataset.src) img.src = img.dataset.src; });
       });
     }
 
     function render(animate) {
+      const s = slides[index];
+      const n = s.work.photos.length;
       track.classList.toggle('is-animating', !!animate);
       track.style.transform = `translateX(${-index * 100}%)`;
-      Array.from(dotsEl.children).forEach((d, i) => d.classList.toggle('is-active', i === index));
-      counterEl.textContent = `${String(index + 1).padStart(2, '0')} / ${String(items.length).padStart(2, '0')}`;
-      titleEl.textContent = items[index].title;
-      typeEl.textContent = items[index].category;
+      titleEl.textContent = s.work.title;
+      typeEl.textContent = s.work.category + (n > 1 ? `, фото ${s.photoIndex + 1} из ${n}` : '');
+      counterEl.textContent = works.length > 1 ? `Работа ${s.workIndex + 1} из ${works.length}` : '';
       prevBtn.disabled = index === 0;
-      nextBtn.disabled = index === items.length - 1;
+      nextBtn.disabled = index === slides.length - 1;
       loadAround(index);
     }
 
-    function go(i) {
-      index = Math.max(0, Math.min(items.length - 1, i));
-      render(true);
-    }
+    const go = (i) => { index = Math.max(0, Math.min(slides.length - 1, i)); render(true); };
     const next = () => go(index + 1);
     const prev = () => go(index - 1);
 
-    function open(visibleWorks, startIndex) {
-      items = visibleWorks;
-      index = startIndex || 0;
+    function open(list, workIndex) {
+      works = list;
+      slides = list.flatMap((work, wi) => work.photos.map((photo, pi) => ({ work, workIndex: wi, photo, photoIndex: pi })));
+      index = Math.max(0, slides.findIndex((s) => s.workIndex === workIndex));
       lastFocus = document.activeElement;
       buildSlides();
+      render(false);
       el.hidden = false;
       document.body.classList.add('is-locked');
       void el.offsetWidth;
       el.classList.add('is-open');
-      render(false);
-      requestAnimationFrame(() => $('.lightbox__close', el).focus());
+      requestAnimationFrame(() => closeBtn.focus());
       document.addEventListener('keydown', onKey);
     }
 
+    function finishClose() {
+      if (el.hidden) return;
+      el.hidden = true;
+      document.body.classList.remove('is-locked');
+      if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    }
+
     function close() {
-      el.classList.remove('is-open');
+      if (!el.classList.contains('is-open')) return;
       document.removeEventListener('keydown', onKey);
-      const done = () => {
-        el.hidden = true;
-        el.removeEventListener('transitionend', done);
-        document.body.classList.remove('is-locked');
-        if (lastFocus && lastFocus.focus) lastFocus.focus();
-      };
-      el.addEventListener('transitionend', done);
-      setTimeout(() => { if (!el.hidden) done(); }, 450);
+      el.classList.remove('is-open');
+      setTimeout(finishClose, reduceMotion ? 0 : 280);
     }
 
     function onKey(e) {
       if (e.key === 'Escape') return close();
       if (e.key === 'ArrowRight') return next();
       if (e.key === 'ArrowLeft') return prev();
-      if (e.key === 'Tab') trapFocus(e);
+      if (e.key === 'Tab') {
+        const f = $$('button:not([disabled])', el).filter((b) => b.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     }
 
-    function trapFocus(e) {
-      const f = el.querySelectorAll('button:not([disabled]), [href]');
-      if (!f.length) return;
-      const first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
-
-    /* ----- pointer / swipe ----- */
+    /* ----- свайп ----- */
     let dragging = false, startX = 0, startY = 0, dx = 0, locked = null, pid = null;
     viewport.addEventListener('pointerdown', (e) => {
-      if (items.length < 2) return;
+      if (slides.length < 2) return;
       dragging = true; locked = null; dx = 0;
       startX = e.clientX; startY = e.clientY; pid = e.pointerId;
       track.classList.remove('is-animating');
@@ -725,16 +499,15 @@
       if (locked !== 'x') return;
       e.preventDefault();
       dx = mx;
-      if ((index === 0 && dx > 0) || (index === items.length - 1 && dx < 0)) dx *= 0.32;
-      const pct = (dx / viewport.clientWidth) * 100;
-      track.style.transform = `translateX(${-index * 100 + pct}%)`;
+      if ((index === 0 && dx > 0) || (index === slides.length - 1 && dx < 0)) dx *= 0.32;
+      track.style.transform = `translateX(${-index * 100 + (dx / viewport.clientWidth) * 100}%)`;
     });
     function endDrag() {
       if (!dragging) return;
       dragging = false;
       if (locked === 'x') {
         const threshold = viewport.clientWidth * 0.18;
-        if (dx <= -threshold) index = Math.min(items.length - 1, index + 1);
+        if (dx <= -threshold) index = Math.min(slides.length - 1, index + 1);
         else if (dx >= threshold) index = Math.max(0, index - 1);
         render(true);
       }
@@ -743,11 +516,138 @@
     viewport.addEventListener('pointerup', endDrag);
     viewport.addEventListener('pointercancel', endDrag);
 
-    /* ----- controls ----- */
     prevBtn.addEventListener('click', prev);
     nextBtn.addEventListener('click', next);
-    el.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', close));
+    $$('[data-close]', el).forEach((b) => b.addEventListener('click', close));
 
     return { open };
+  })();
+
+  /* ========================================================
+     HERO: слайдшоу работ. Время показа задаёт CSS-анимация полоски
+     прогресса (её конец переключает слайд), поэтому пауза = пауза анимации.
+     ======================================================== */
+  (() => {
+    const hero = $('#hero');
+    const slidesEl = $('#hero-slides');
+    if (!hero || !slidesEl) return;
+    const SLIDE_MS = 5000;
+    // ширина фото на экране: на телефоне квадрат (фото 4:3 шире блока), на десктопе во всю ширину
+    const HERO_SIZES = '(max-width: 860px) 70vw, 100vw';
+    const list = WORKS.some((w) => w.hero) ? WORKS.filter((w) => w.hero) : WORKS.slice(0, 5);
+    if (list.length < 2) return;
+
+    const bar = $('.hero__bar', hero);
+    const progress = $('#hero-progress');
+    const capTitle = $('#hero-caption-title');
+    const capCat = $('#hero-caption-cat');
+    const count = $('#hero-count');
+    const pauseBtn = $('#hero-pause');
+    hero.style.setProperty('--slide-ms', SLIDE_MS + 'ms');
+
+    // слайды: первый уже есть в HTML (если совпадает), остальные создаём, фото грузим по мере надобности
+    const first = $('.hero__slide', slidesEl);
+    const slides = list.map((w, i) => {
+      if (i === 0 && first && first.dataset.id === w.id) return first;
+      const fig = document.createElement('figure');
+      fig.className = 'hero__slide';
+      fig.dataset.id = w.id;
+      const img = document.createElement('img');
+      img.alt = w.alt || w.title;
+      img.decoding = 'async';
+      // только полное фото (превью 900 px на весь экран мылятся); большая версия для больших экранов
+      img.dataset.src = photoUrl(w.photos[0]);
+      if (w.large) img.dataset.srcset = `${photoUrl(w.photos[0])} 1800w, ${photoUrl(w.large)} 2800w`;
+      if (w.focus) img.style.objectPosition = w.focus;
+      fig.appendChild(img);
+      return fig;
+    });
+    if (first && !slides.includes(first)) first.remove();
+    slides.forEach((sl) => { if (!sl.isConnected) slidesEl.appendChild(sl); });
+    const load = (i) => {
+      const img = $('img', slides[i]);
+      if (img.dataset.src && !img.getAttribute('src')) {
+        if (img.dataset.srcset) { img.sizes = HERO_SIZES; img.srcset = img.dataset.srcset; }
+        img.src = img.dataset.src;
+      }
+    };
+
+    const segs = list.map((w, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'hero__seg';
+      b.setAttribute('aria-label', `Фото ${i + 1}: ${w.title}`);
+      b.innerHTML = '<span></span>';
+      b.addEventListener('click', () => go(i));
+      progress.appendChild(b);
+      return b;
+    });
+
+    let index = 0;
+    let stopped = reduceMotion;   // пользователь нажал паузу (или просит меньше движения)
+    // временная пауза, незаметная пользователю: вкладка в фоне или hero ушёл с экрана.
+    // Курсор и фокус паузу не ставят: иначе после нажатия «плей» показ тут же снова вставал
+    const away = { tab: false, screen: false };
+    let held = false;
+
+    function go(i) {
+      index = (i + list.length) % list.length;
+      load(index);
+      load((index + 1) % list.length);   // следующее фото заранее
+      slides.forEach((sl, k) => {
+        sl.classList.toggle('is-current', k === index);
+        sl.setAttribute('aria-hidden', String(k !== index));
+      });
+      segs.forEach((b, k) => {
+        b.classList.toggle('is-done', k < index);
+        b.classList.remove('is-current');
+        b.setAttribute('aria-current', String(k === index));
+      });
+      void segs[index].offsetWidth;   // перезапуск анимации полоски
+      segs[index].classList.add('is-current');
+      if (stopped) segs[index].classList.add('is-done');
+      capTitle.textContent = list[index].title;
+      capCat.textContent = list[index].category;
+      count.textContent = `${index + 1} / ${list.length}`;
+    }
+
+    const sync = () => { held = away.tab || away.screen; hero.classList.toggle('is-paused', stopped || held); };
+    progress.addEventListener('animationend', () => { if (!stopped && !held) go(index + 1); });
+
+    pauseBtn.addEventListener('click', () => {
+      stopped = !stopped;
+      hero.classList.toggle('is-stopped', stopped);
+      pauseBtn.setAttribute('aria-label', stopped ? 'Запустить смену фото' : 'Остановить смену фото');
+      $('#hero-caption').setAttribute('aria-live', stopped ? 'polite' : 'off');
+      go(index);
+      sync();
+    });
+    hero.classList.toggle('is-stopped', stopped);
+    if (stopped) pauseBtn.setAttribute('aria-label', 'Запустить смену фото');
+
+    const stage = $('#hero-stage');
+    document.addEventListener('visibilitychange', () => { away.tab = document.hidden; sync(); });
+    if (hasIO) new IntersectionObserver(([e]) => { away.screen = !e.isIntersecting; sync(); }, { threshold: 0.2 }).observe(hero);
+
+    // свайп по фото на телефоне
+    let sx = 0, sy = 0, swiping = false;
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' || e.target.closest('a, button')) return;
+      swiping = true; sx = e.clientX; sy = e.clientY;
+    });
+    stage.addEventListener('pointerup', (e) => {
+      if (!swiping) return;
+      swiping = false;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(index + (dx < 0 ? 1 : -1));
+    });
+    stage.addEventListener('pointercancel', () => { swiping = false; });
+
+    // подпись открывает работу в просмотре
+    $('#hero-caption').addEventListener('click', () => Lightbox.open(WORKS, WORKS.indexOf(list[index])));
+
+    bar.hidden = false;
+    go(0);
+    sync();
   })();
 })();
