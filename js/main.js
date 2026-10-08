@@ -105,6 +105,7 @@
     const menu = $('#menu');
     if (!burger || !menu) return;
     const links = $$('a', menu);
+    const focusables = $$('a, button', menu);   // ссылки и переключатель темы
     let lastFocus = null;
     const isOpen = () => document.body.classList.contains('menu-open');
 
@@ -130,7 +131,7 @@
     function onKey(e) {
       if (e.key === 'Escape') return close();
       if (e.key !== 'Tab') return;
-      const f = [burger, ...links];
+      const f = [burger, ...focusables];
       const first = f[0], last = f[f.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
@@ -140,6 +141,77 @@
     links.forEach((a) => a.addEventListener('click', () => close(false)));
     // меню только для мобильной ширины: при развороте на десктоп закрываем
     window.matchMedia('(min-width: 961px)').addEventListener('change', (m) => { if (m.matches && isOpen()) close(false); });
+  })();
+
+  /* ---------- тема: системная (по умолчанию), светлая или тёмная ----------
+     Выбор хранится в localStorage; до загрузки скрипта его применяет код в <head>.
+     «Системная» = атрибута data-theme нет, CSS берёт тему из prefers-color-scheme. */
+  (() => {
+    const root = document.documentElement;
+    const ORDER = ['system', 'light', 'dark'];
+    const NAMES = { system: 'как в системе', light: 'светлая', dark: 'тёмная' };
+    const ICONS = { system: '#i-monitor', light: '#i-sun', dark: '#i-moon' };
+    const cycleBtn = $('#theme-cycle');
+    const segBtns = $$('[data-theme-set]');
+    const seg = $('.theme-switch');
+    // цвет панели браузера: в системном режиме у каждой meta своё media, при выборе обе получают цвет темы
+    const metas = $$('meta[name="theme-color"]');
+    metas.forEach((m) => { m.dataset.auto = m.content; });
+    const BAR = { light: '#EDEFEF', dark: '#0F1112' };
+
+    function apply(theme, save) {
+      if (theme === 'system') delete root.dataset.theme;
+      else root.dataset.theme = theme;
+      if (save) {
+        try {
+          if (theme === 'system') localStorage.removeItem('theme');
+          else localStorage.setItem('theme', theme);
+        } catch (_) { /* приватный режим: тема просто не запомнится */ }
+      }
+      metas.forEach((m) => { m.content = theme === 'system' ? m.dataset.auto : BAR[theme]; });
+      segBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme)));
+      if (seg) seg.style.setProperty('--idx', ORDER.indexOf(theme));
+      if (cycleBtn) {
+        const next = ORDER[(ORDER.indexOf(theme) + 1) % ORDER.length];
+        $('use', cycleBtn).setAttribute('href', ICONS[theme]);
+        cycleBtn.setAttribute('aria-label', `Тема: ${NAMES[theme]}. Переключить: ${NAMES[next]}`);
+        cycleBtn.title = `Тема: ${NAMES[theme]}`;
+      }
+    }
+
+    const current = () => root.dataset.theme || 'system';
+    const darkMQ = window.matchMedia('(prefers-color-scheme: dark)');
+    const looks = (theme) => (theme === 'system' ? (darkMQ.matches ? 'dark' : 'light') : theme);
+
+    // новая тема раскрывается кругом из центра нажатой кнопки (View Transitions);
+    // если внешне ничего не меняется (например, «системная» и так светлая), просто переключаем
+    function switchTo(theme, from) {
+      if (theme === current()) return;
+      const visible = looks(theme) !== looks(current());
+      if (!visible || !document.startViewTransition || reduceMotion) { apply(theme, true); return; }
+      const r = from.getBoundingClientRect();
+      const x = r.left + r.width / 2, y = r.top + r.height / 2;
+      const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      root.classList.add('theme-anim');
+      const vt = document.startViewTransition(() => apply(theme, true));
+      vt.ready.then(() => {
+        root.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          { duration: 700, easing: 'cubic-bezier(0.65, 0, 0.35, 1)', pseudoElement: '::view-transition-new(root)' },
+        );
+      }).catch(() => {});
+      vt.finished.finally(() => root.classList.remove('theme-anim'));
+    }
+
+    if (cycleBtn) {
+      cycleBtn.addEventListener('click', () => {
+        switchTo(ORDER[(ORDER.indexOf(current()) + 1) % ORDER.length], cycleBtn);
+        if (!reduceMotion) { cycleBtn.classList.remove('is-turning'); void cycleBtn.offsetWidth; cycleBtn.classList.add('is-turning'); }
+      });
+    }
+    segBtns.forEach((b) => b.addEventListener('click', () => switchTo(b.dataset.themeSet, b)));
+    apply(current(), false);
+    if (seg) requestAnimationFrame(() => seg.classList.add('is-ready'));
   })();
 
   /* ---------- шапка получает фон, как только страница сдвинулась ---------- */
@@ -174,7 +246,7 @@
   const observeReveal = (el) => (revealIO ? revealIO.observe(el) : el.classList.add('is-in'));
   $$('.reveal').forEach(observeReveal);
 
-  // шаги процесса: заливка едет по желобку, ручки загораются по очереди
+  // шаги процесса: заливка едет по линии, значки загораются по очереди
   const steps = $('#steps');
   if (steps) {
     $$('.step', steps).forEach((st, i) => st.style.setProperty('--i', i));
@@ -186,7 +258,19 @@
     } else steps.classList.add('is-in');
   }
 
-  /* ---------- циферблаты: цифры считаются вверх, пока заполняется кольцо (1.8 с, как в CSS) ---------- */
+  /* ---------- услуги: панель показывает фото пункта под курсором (или нажатого) ---------- */
+  (() => {
+    const items = $$('.svc-grid .svc');
+    if (!items.length) return;
+    const activate = (it) => items.forEach((x) => x.classList.toggle('is-active', x === it));
+    items.forEach((it) => {
+      it.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') activate(it); });
+      it.addEventListener('click', () => activate(it));
+    });
+    activate(items[0]);
+  })();
+
+  /* ---------- факты в «О нас»: цифры считаются вверх за 1.8 с ---------- */
   const counters = $$('[data-count]');
   if (counters.length && hasIO && !reduceMotion) {
     counters.forEach((el) => { el.textContent = '0'; });

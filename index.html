@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#E3E6EA" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#23272C" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#EDEFEF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0F1112" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="light dark">
   <meta name="format-detection" content="telephone=no">
   <meta name="description" content="Идея Плюс, мастерская мебели на заказ: кухни, гардеробные, мебель для ванной, гостиной и спальни. Ставрополь и Ставропольский край, Грозный, Черкесск, Москва и другие города. Замер, 3D-проект, производство и монтаж.">
@@ -33,7 +33,11 @@
         imagesrcset="assets/work-examples/demo-unsplash/wardrobe-vanity.jpg 1800w, assets/work-examples/demo-unsplash/wardrobe-vanity-large.jpg 2800w"
         imagesizes="(max-width: 860px) 70vw, 100vw">
   <link rel="stylesheet" href="css/style.css">
-  <script>document.documentElement.classList.add('js');</script>
+  <!-- тема: выбор пользователя (светлая/тёмная) ставим до отрисовки, чтобы не мигало; без выбора работает системная -->
+  <script>
+    document.documentElement.classList.add('js');
+    try { var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
 </head>
 <body>
 <a class="skip-link" href="#works">Перейти к работам</a>
@@ -59,6 +63,9 @@
   <symbol id="i-pause" viewBox="0 0 256 256" fill="currentColor"><path d="M216,48V208a16,16,0,0,1-16,16H160a16,16,0,0,1-16-16V48a16,16,0,0,1,16-16h40A16,16,0,0,1,216,48ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Z"/></symbol>
   <symbol id="i-play" viewBox="0 0 256 256" fill="currentColor"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"/></symbol>
   <symbol id="i-max" viewBox="98 98 806 806"><path fill="currentColor" fill-rule="evenodd" d="M508.1719971,871.0396729 c-74.6478577,0-109.3381958-10.8974609-169.6376648-54.4874268 c-38.1412354,49.0386963-158.9217987,87.3615723-164.1889191,21.7949829c0-49.2203369-10.8975067-90.812439-23.2480011-136.218689 c-14.7115936-55.9404907-31.4210892-118.237854-31.4210892-208.5054321 c0-215.5888062,176.9026489-377.7798462,386.4978333-377.7798462c209.7767639,0,374.1473083,170.1825562,374.1473083,379.7776794 C881.0255737,701.9748535,714.5241699,869.9389038,508.1719971,871.0396729z M511.2596436,302.1904602 c-102.0732117-5.2671204-181.624939,65.3849792-199.2425537,176.176178 c-14.5299988,91.7205811,11.2607422,203.4199219,33.2373657,209.2319336 c10.5342407,2.5427246,37.0514832-18.8890381,53.5793457-35.4168701 c27.3296509,18.8800049,59.1547852,30.2192993,92.2654419,32.8740845 c105.7646484,5.0874634,196.1364746-75.4315186,203.2382812-181.0800476 c4.1342163-105.8720703-77.2985229-195.5450134-183.0779419-201.6036377L511.2596436,302.1904602z"/></symbol>
+  <symbol id="i-monitor" viewBox="0 0 256 256" fill="currentColor"><path d="M208,40H48A24,24,0,0,0,24,64V176a24,24,0,0,0,24,24H208a24,24,0,0,0,24-24V64A24,24,0,0,0,208,40Zm8,136a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V64a8,8,0,0,1,8-8H208a8,8,0,0,1,8,8Zm-48,48a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,224Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 256 256" fill="currentColor"><path d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 256 256" fill="currentColor"><path d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z"/></symbol>
   <!-- знак «И+»: буква наследует цвет текста, плюс всегда акцентный -->
   <symbol id="mark" viewBox="0 0 64 64">
     <path d="M12 23H18V41L32 23H38V50H32V32L18 50H12Z" fill="currentColor"/>
@@ -68,7 +75,7 @@
 
 <span class="top-sentinel" id="top-sentinel" aria-hidden="true"></span>
 
-<!-- ====== NAV: выпуклая плашка ====== -->
+<!-- ====== NAV: стеклянная плашка ====== -->
 <header class="nav" id="nav">
   <div class="nav__bar">
     <a class="brand" href="#top" aria-label="Идея Плюс, на главную">
@@ -82,6 +89,10 @@
       <a href="#about">О нас</a>
       <a href="#contacts">Контакты</a>
     </nav>
+    <!-- тема: по кругу «как в системе» → светлая → тёмная; подпись и иконку ставит JS -->
+    <button class="nav__theme" id="theme-cycle" type="button" aria-label="Тема: как в системе. Переключить на светлую">
+      <svg aria-hidden="true"><use href="#i-monitor"/></svg>
+    </button>
     <a class="nav__tel" href="tel:+79614506212"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>+7 961 450-62-12</span></a>
     <button class="burger" id="burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu">
       <span></span><span></span>
@@ -100,10 +111,11 @@
     <a href="#contacts" data-section="contacts">Контакты</a>
   </nav>
   <div class="menu__foot">
-    <a class="well-link" href="tel:+79614506212">+7 961 450-62-12</a>
-    <div class="messengers">
-      <a class="pill" href="https://wa.me/79614506212" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
-      <a class="pill" href="https://t.me/+79614506212" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-tg"/></svg>Telegram</a>
+    <div class="theme-switch" role="group" aria-label="Тема оформления">
+      <span class="theme-switch__thumb" aria-hidden="true"></span>
+      <button type="button" data-theme-set="system" aria-pressed="true"><svg aria-hidden="true"><use href="#i-monitor"/></svg>Системная</button>
+      <button type="button" data-theme-set="light" aria-pressed="false"><svg aria-hidden="true"><use href="#i-sun"/></svg>Светлая</button>
+      <button type="button" data-theme-set="dark" aria-pressed="false"><svg aria-hidden="true"><use href="#i-moon"/></svg>Тёмная</button>
     </div>
   </div>
 </div>
@@ -164,72 +176,87 @@
     </div>
   </section>
 
-  <!-- ====== SERVICES: четыре одинаковые карточки, фото + иконка + текст ======
-       ДЕМО: фото с Unsplash, заменить на свои работы этих категорий -->
+  <!-- ====== SERVICES: большое фото, поверх стопка стеклянных пунктов.
+       Наведение на пункт меняет фото панели; на телефоне у каждого пункта своё фото.
+       ДЕМО: фото с Unsplash, заменить на свои работы этих категорий ====== -->
   <section class="services section" id="services" data-title="Услуги">
     <h2 class="h2 reveal">Что мы делаем</h2>
     <p class="sub reveal">От отдельного предмета до мебели для всей квартиры.</p>
     <ul class="svc-grid">
       <li class="svc reveal">
-        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/kitchen-walnut-island.webp" alt="" loading="lazy" decoding="async"></div>
+        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/kitchen-walnut-island.webp" srcset="assets/work-examples/demo-unsplash/thumbs/kitchen-walnut-island.webp 900w, assets/work-examples/demo-unsplash/kitchen-walnut-island.jpg 1800w" sizes="(max-width: 860px) 100vw, 1320px" alt="" loading="lazy" decoding="async"></div>
         <div class="svc__body">
           <span class="knob"><svg aria-hidden="true"><use href="#i-cooking-pot"/></svg></span>
-          <h3 class="svc__title">Кухни на заказ</h3>
-          <p class="svc__text">Гарнитуры любой сложности, от классики до минимализма, с продуманным хранением и подсветкой рабочей зоны.</p>
+          <div>
+            <h3 class="svc__title">Кухни на заказ</h3>
+            <p class="svc__text">Гарнитуры любой сложности, от классики до минимализма, с продуманным хранением и подсветкой рабочей зоны.</p>
+          </div>
         </div>
       </li>
       <li class="svc reveal">
-        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/wardrobe-vanity.webp" alt="" loading="lazy" decoding="async"></div>
+        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/wardrobe-vanity.webp" srcset="assets/work-examples/demo-unsplash/thumbs/wardrobe-vanity.webp 900w, assets/work-examples/demo-unsplash/wardrobe-vanity.jpg 1800w" sizes="(max-width: 860px) 100vw, 1320px" alt="" loading="lazy" decoding="async"></div>
         <div class="svc__body">
           <span class="knob"><svg aria-hidden="true"><use href="#i-coat-hanger"/></svg></span>
-          <h3 class="svc__title">Гардеробные и шкафы</h3>
-          <p class="svc__text">Встроенные системы хранения под геометрию помещения, от прихожей до отдельной гардеробной комнаты.</p>
+          <div>
+            <h3 class="svc__title">Гардеробные и шкафы</h3>
+            <p class="svc__text">Встроенные системы хранения под геометрию помещения, от прихожей до отдельной гардеробной комнаты.</p>
+          </div>
         </div>
       </li>
       <li class="svc reveal">
-        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/bath-twin-vanities.webp" alt="" loading="lazy" decoding="async"></div>
+        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/bath-twin-vanities.webp" srcset="assets/work-examples/demo-unsplash/thumbs/bath-twin-vanities.webp 900w, assets/work-examples/demo-unsplash/bath-twin-vanities.jpg 1800w" sizes="(max-width: 860px) 100vw, 1320px" alt="" loading="lazy" decoding="async"></div>
         <div class="svc__body">
           <span class="knob"><svg aria-hidden="true"><use href="#i-bathtub"/></svg></span>
-          <h3 class="svc__title">Мебель для ванной</h3>
-          <p class="svc__text">Тумбы, пеналы и системы хранения из влагостойких материалов с точной подгонкой под сантехнику.</p>
+          <div>
+            <h3 class="svc__title">Мебель для ванной</h3>
+            <p class="svc__text">Тумбы, пеналы и системы хранения из влагостойких материалов с точной подгонкой под сантехнику.</p>
+          </div>
         </div>
       </li>
       <li class="svc reveal">
-        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/living-tv-veneer.webp" alt="" loading="lazy" decoding="async"></div>
+        <div class="svc__photo"><img src="assets/work-examples/demo-unsplash/thumbs/living-wall-shelves.webp" srcset="assets/work-examples/demo-unsplash/thumbs/living-wall-shelves.webp 900w, assets/work-examples/demo-unsplash/living-wall-shelves.jpg 1800w" sizes="(max-width: 860px) 100vw, 1320px" alt="" loading="lazy" decoding="async"></div>
         <div class="svc__body">
           <span class="knob"><svg aria-hidden="true"><use href="#i-bed"/></svg></span>
-          <h3 class="svc__title">Гостиная и спальня</h3>
-          <p class="svc__text">Тумбы под ТВ, кровати, стеллажи и прикроватные системы в едином стиле с интерьером.</p>
+          <div>
+            <h3 class="svc__title">Гостиная и спальня</h3>
+            <p class="svc__text">Тумбы под ТВ, кровати, стеллажи и прикроватные системы в едином стиле с интерьером.</p>
+          </div>
         </div>
       </li>
     </ul>
   </section>
 
-  <!-- ====== PROCESS: желобок с заливкой, на нём ручки этапов ====== -->
+  <!-- ====== PROCESS: фото во всю ширину, этапы на стеклянной ленте с заливкой.
+       ДЕМО: фото с Unsplash ====== -->
   <section class="process section" id="process" data-title="Процесс">
     <h2 class="h2 reveal">От замера до монтажа</h2>
-    <ol class="steps" id="steps">
-      <li class="step">
-        <span class="step__knob"><svg aria-hidden="true"><use href="#i-ruler"/></svg></span>
-        <h3 class="step__title">Консультация и замер</h3>
-        <p class="step__text">Выезжаем на объект, обсуждаем задачи и бюджет, снимаем точные размеры.</p>
-      </li>
-      <li class="step">
-        <span class="step__knob"><svg aria-hidden="true"><use href="#i-pencil-ruler"/></svg></span>
-        <h3 class="step__title">Дизайн-проект</h3>
-        <p class="step__text">Готовим 3D-визуализацию и чертежи, согласовываем материалы и фурнитуру.</p>
-      </li>
-      <li class="step">
-        <span class="step__knob"><svg aria-hidden="true"><use href="#i-hammer"/></svg></span>
-        <h3 class="step__title">Производство</h3>
-        <p class="step__text">Изготавливаем мебель на собственном оборудовании с контролем на каждом этапе.</p>
-      </li>
-      <li class="step">
-        <span class="step__knob"><svg aria-hidden="true"><use href="#i-truck"/></svg></span>
-        <h3 class="step__title">Монтаж</h3>
-        <p class="step__text">Доставляем и устанавливаем под ключ. Гарантия 1 год на мебель и фурнитуру.</p>
-      </li>
-    </ol>
+    <div class="process__panel">
+      <img class="process__bg" src="assets/work-examples/demo-unsplash/thumbs/kitchen-walnut.webp"
+           srcset="assets/work-examples/demo-unsplash/thumbs/kitchen-walnut.webp 900w, assets/work-examples/demo-unsplash/kitchen-walnut.jpg 1800w"
+           sizes="(max-width: 860px) 100vw, 1320px" alt="" loading="lazy" decoding="async">
+      <ol class="steps" id="steps">
+        <li class="step">
+          <span class="step__knob"><svg aria-hidden="true"><use href="#i-ruler"/></svg></span>
+          <h3 class="step__title">Консультация и замер</h3>
+          <p class="step__text">Выезжаем на объект, обсуждаем задачи и бюджет, снимаем точные размеры.</p>
+        </li>
+        <li class="step">
+          <span class="step__knob"><svg aria-hidden="true"><use href="#i-pencil-ruler"/></svg></span>
+          <h3 class="step__title">Дизайн-проект</h3>
+          <p class="step__text">Готовим 3D-визуализацию и чертежи, согласовываем материалы и фурнитуру.</p>
+        </li>
+        <li class="step">
+          <span class="step__knob"><svg aria-hidden="true"><use href="#i-hammer"/></svg></span>
+          <h3 class="step__title">Производство</h3>
+          <p class="step__text">Изготавливаем мебель на собственном оборудовании с контролем на каждом этапе.</p>
+        </li>
+        <li class="step">
+          <span class="step__knob"><svg aria-hidden="true"><use href="#i-truck"/></svg></span>
+          <h3 class="step__title">Монтаж</h3>
+          <p class="step__text">Доставляем и устанавливаем под ключ. Гарантия 1 год на мебель и фурнитуру.</p>
+        </li>
+      </ol>
+    </div>
   </section>
 
   <!-- ====== ABOUT ====== -->
@@ -281,19 +308,25 @@
 
   <!-- ====== CONTACTS ====== -->
   <section class="contacts section" id="contacts" data-title="Контакты">
+    <!-- ДЕМО: фото с Unsplash -->
     <div class="contacts__panel reveal">
-      <div class="contacts__copy">
-        <h2 class="h2">Расскажите о&nbsp;своём проекте</h2>
-        <p class="sub">Свяжемся в течение дня и посчитаем стоимость и сроки. Работаем в Ставрополе, по краю, в Грозном, Черкесске, Москве и других городах.</p>
-      </div>
-      <div class="contacts__actions">
-        <a class="contacts__phone" href="tel:+79614506212"><span class="knob knob--accent"><svg aria-hidden="true"><use href="#i-phone"/></svg></span>+7 961 450-62-12</a>
-        <div class="messengers">
-          <a class="pill" href="https://wa.me/79614506212" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
-          <a class="pill" href="https://t.me/+79614506212" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-tg"/></svg>Telegram</a>
-          <!-- MAX: ссылка на чат по номеру не поддерживается; замените href на ссылку профиля из настроек MAX -->
-          <a class="pill" href="https://max.ru/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-max"/></svg>MAX</a>
-          <a class="pill" href="https://instagram.com/ideaplus.2656221" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-ig"/></svg>Instagram</a>
+      <img class="contacts__bg" src="assets/work-examples/demo-unsplash/thumbs/bedroom-headboard.webp"
+           srcset="assets/work-examples/demo-unsplash/thumbs/bedroom-headboard.webp 900w, assets/work-examples/demo-unsplash/bedroom-headboard.jpg 1800w"
+           sizes="(max-width: 860px) 100vw, 1320px" alt="" loading="lazy" decoding="async">
+      <div class="contacts__glass">
+        <div class="contacts__copy">
+          <h2 class="h2">Расскажите о&nbsp;своём проекте</h2>
+          <p class="sub">Свяжемся в течение дня и посчитаем стоимость и сроки. Работаем в Ставрополе, по краю, в Грозном, Черкесске, Москве и других городах.</p>
+        </div>
+        <div class="contacts__actions">
+          <a class="contacts__phone" href="tel:+79614506212"><span class="knob knob--accent"><svg aria-hidden="true"><use href="#i-phone"/></svg></span>+7 961 450-62-12</a>
+          <div class="messengers">
+            <a class="pill" href="https://wa.me/79614506212" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
+            <a class="pill" href="https://t.me/+79614506212" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-tg"/></svg>Telegram</a>
+            <!-- MAX: ссылка на чат по номеру не поддерживается; замените href на ссылку профиля из настроек MAX -->
+            <a class="pill" href="https://max.ru/" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-max"/></svg>MAX</a>
+            <a class="pill" href="https://instagram.com/ideaplus.2656221" target="_blank" rel="noopener"><svg aria-hidden="true"><use href="#i-ig"/></svg>Instagram</a>
+          </div>
         </div>
       </div>
     </div>
